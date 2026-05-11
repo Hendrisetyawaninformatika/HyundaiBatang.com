@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <title>Detail Mobil | HYUNDAI BATANG</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #f5f7fa;
+            color: #1e2a3e;
+        }
+
+        header {
+            background: white;
+            padding: 0.8rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            background: #003d6b;
+            color: white;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            font-weight: bold;
+        }
+
+        .logo-text h1 {
+            font-size: 0.95rem;
+            color: #003d6b;
+        }
+
+        .logo-text p {
+            font-size: 0.6rem;
+            color: #666;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 1.2rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            font-size: 0.8rem;
+        }
+
+        nav a.active {
+            color: #ff6b35;
+            border-bottom: 2px solid #ff6b35;
+        }
+
+        .menu-toggle {
+            display: none;
+            font-size: 1.6rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .breadcrumb {
+            background: #e9ecef;
+            padding: 0.7rem 1rem;
+            font-size: 0.7rem;
+        }
+
+        .breadcrumb a {
+            color: #003d6b;
+            text-decoration: none;
+        }
+
+        .detail-container {
+            max-width: 1200px;
+            margin: 1rem auto;
+            padding: 0 1rem;
+        }
+
+        .car-gallery {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .main-image {
+            width: 100%;
+        }
+
+        .main-image img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+
+        .car-info {
+            background: white;
+            border-radius: 20px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .car-title {
+            font-size: 1.4rem;
+            color: #003d6b;
+            margin-bottom: 0.3rem;
+        }
+
+        .car-year {
+            display: inline-block;
+            background: #ff6b35;
+            color: white;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .car-condition {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            margin-bottom: 0.8rem;
+            margin-left: 0.5rem;
+        }
+
+        .price {
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: #ff6b35;
+            margin: 0.8rem 0;
+        }
+
+        .price small {
+            font-size: 0.7rem;
+            font-weight: normal;
+            color: #666;
+        }
+
+        .variant-selector {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 0.8rem;
+            margin: 1rem 0;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .variant-btn {
+            padding: 0.5rem 1.2rem;
+            background: #e9ecef;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .variant-btn.active {
+            background: #003d6b;
+            color: white;
+        }
+
+        .variant-btn:hover {
+            background: #ff6b35;
+            color: white;
+        }
+
+        .spec-section {
+            background: white;
+            border-radius: 20px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .spec-section h3 {
+            color: #003d6b;
+            font-size: 1rem;
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.4rem;
+            border-bottom: 2px solid #ff6b35;
+            display: inline-block;
+        }
+
+        .spec-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.6rem;
+        }
+
+        .spec-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.4rem 0;
+            border-bottom: 1px solid #e9ecef;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .spec-label {
+            font-weight: 600;
+            color: #555;
+            font-size: 0.8rem;
+            background: #f8f9fa;
+            padding: 0.2rem 0.5rem;
+            border-radius: 8px;
+        }
+
+        .spec-value {
+            color: #1e2a3e;
+            font-size: 0.8rem;
+            text-align: right;
+            flex: 1;
+        }
+
+        .feature-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .feature-tag {
+            background: #e8f4fd;
+            color: #003d6b;
+            padding: 0.3rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        .feature-tag.safety {
+            background: #fff3e0;
+            color: #ff6b35;
+        }
+
+        .feature-tag.adas {
+            background: #e0f7e8;
+            color: #28a745;
+        }
+
+        .feature-tag.kelebihan {
+            background: #ff6b35;
+            color: white;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.8rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.8rem 1rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: bold;
+            text-align: center;
+            flex: 1;
+            min-width: 140px;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-wa {
+            background: #25D366;
+            color: white;
+        }
+
+        .btn-wa:hover {
+            background: #1da851;
+            transform: translateY(-2px);
+        }
+
+        .btn-testdrive {
+            background: #003d6b;
+            color: white;
+        }
+
+        .btn-testdrive:hover {
+            background: #00284a;
+            transform: translateY(-2px);
+        }
+
+        .btn-back {
+            background: #6c757d;
+            color: white;
+            display: inline-block;
+            text-align: center;
+            padding: 0.6rem 1.2rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        footer {
+            background: #1e2a3e;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            font-size: 0.7rem;
+            margin-top: 1.5rem;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 15px;
+            right: 15px;
+            background: #ff6b35;
+            color: white;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 98;
+            font-size: 1.2rem;
+        }
+
+        .back-to-top.show {
+            opacity: 1;
+        }
+
+        @media (min-width: 768px) {
+            .spec-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .car-title {
+                font-size: 1.8rem;
+            }
+            .price {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+            nav {
+                display: none;
+                width: 100%;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                right: 0;
+                background: white;
+                padding: 1rem;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+                border-radius: 0 0 20px 20px;
+            }
+            nav.show {
+                display: block;
+            }
+            nav.show ul {
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+            .spec-item {
+                flex-direction: column;
+            }
+            .spec-value {
+                text-align: left;
+            }
+            .variant-selector {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <div class="logo-icon">H</div>
+            <div class="logo-text">
+                <h1>HYUNDAI BATANG</h1>
+                <p>Your Trusted Car Dealer</p>
+            </div>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">🏠 Home</a></li>
+                <li><a href="about.html">📖 About</a></li>
+                <li><a href="inventory.html">📦 Inventory</a></li>
+            </ul>
+        </nav>
+        <button class="menu-toggle" id="menuToggle">☰</button>
+    </header>
+
+    <div class="breadcrumb">
+        <a href="index.html">Home</a> / <a href="inventory.html">Inventory</a> / <span id="breadcrumb-name">Detail Mobil</span>
+    </div>
+
+    <div class="detail-container" id="detailContainer">
+        <div style="text-align:center; padding:2rem;">⏳ Memuat data mobil...</div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 HYUNDAI BATANG - Showroom Mobil Terpercaya | FAJAR HYUNDAI BATANG</p>
+    </footer>
+
+    <a href="#" class="back-to-top" id="backToTop">↑</a>
+
+    <script>
+        // DATABASE SEMUA MOBIL
+        const carDatabase = {
+            // NEW CRETA PRIME IVT
+            "new-creta-prime": {
+                name: "NEW CRETA PRIME IVT",
+                year: "2026",
+                condition: "Baru",
+                price: "Rp 453.400.000",
+                image: "https://i.ibb.co.com/VcGFZNFL/IMG-20260509-WA0173.jpg",
+                specs: {
+                    "Mesin": "Smartstream 1.5L MPI, 4 silinder 1.497 cc",
+                    "Tenaga": "115 PS @ 6.300 rpm",
+                    "Torsi": "143,8 Nm @ 4.500 rpm",
+                    "Transmisi": "Intelligent Variable Transmission (IVT)",
+                    "Drive Mode": "Eco, Normal, Sport, Smart",
+                    "Panjang": "4.330 mm",
+                    "Lebar": "1.790 mm",
+                    "Tinggi": "1.635 mm",
+                    "Wheelbase": "2.610 mm",
+                    "Ground Clearance": "200 mm"
+                },
+                features: {
+                    exterior: ["LED Headlamp & LED DRL", "Velg Alloy Dual Tone 17 Inci", "Panoramic Sunroof", "Rear Spoiler + LED Stop Lamp", "Electric Folding Mirror", "Roof Rail"],
+                    interior: ["Head Unit 10,25 Inci", "Full Digital Cluster", "Bose Premium Sound System", "Ventilated Seat Depan", "Wireless Charger", "Ambient Mood Lamp", "AC Digital Climate Control", "Jok Kulit Premium", "Hyundai Bluelink"],
+                    safety: ["6 Airbags", "Forward Collision Avoidance Assist", "Lane Keeping Assist", "Blind Spot Collision Warning", "Rear Cross Traffic Alert", "Smart Cruise Control", "Electronic Parking Brake + Auto Hold", "TPMS", "Hill Start Assist", "ESC & HAC"]
+                }
+            },
+
+            // STARGAZER CARTENZ PRIME HSS IVT
+            "stargazer-cartenz-prime": {
+                name: "STARGAZER CARTENZ PRIME HSS IVT",
+                year: "2026",
+                condition: "Baru",
+                price: "Rp 370.300.000",
+                image: "https://i.ibb.co.com/chYmPnK7/IMG-20260509-WA0172-1.jpg",
+                specs: {
+                    "Mesin": "Smartstream G1.5 MPI, 1.497 cc, 4 silinder",
+                    "Tenaga": "115 PS / 113 hp @ 6.300 rpm",
+                    "Torsi": "143,8 Nm @ 4.500 rpm",
+                    "Transmisi": "IVT (Intelligent Variable Transmission)",
+                    "Penggerak": "FWD (Front Wheel Drive)",
+                    "Panjang": "4.575 mm",
+                    "Lebar": "1.780 mm",
+                    "Tinggi": "1.710 mm",
+                    "Wheelbase": "2.780 mm",
+                    "Ground Clearance": "205 mm",
+                    "Kapasitas": "7 Penumpang"
+                },
+                features: {
+                    exterior: ["Velg 17 Inci Diamond Cut Alloy", "Ban 205/50 R17", "Lampu Depan LED MFR", "Lampu Belakang LED", "Roof Rails", "Electric Folding Mirror", "Grille Silver"],
+                    interior: ["Jok Kombinasi Cloth + Artificial Leather", "Captain Seat (opsional)", "AC Full Automatic + Rear AC", "Wireless Charging", "Push Start Button", "Remote Engine Start", "Steering Tilt & Telescopic", "Seatback Table", "Kabin Lega Keluarga", "Dual Screen 10.25 Inci", "TFT LCD Instrument Cluster", "Touchscreen Infotainment + Navigation", "Hyundai Bluelink", "Bluetooth", "USB-C", "Audio 6 Speaker", "Built-in Navigation"],
+                    adas: ["FCA (Forward Collision Avoidance)", "SCC with Stop & Go", "Lane Keeping Assist", "Lane Following Assist", "Blind Spot / SEW", "RCCA (Rear Cross Collision Alert)", "High Beam Assist", "Driver Attention Warning"],
+                    safety: ["6 Airbags", "TPMS", "ESC", "HAC", "VSM", "Parking Distance Warning Depan & Belakang", "HSS (High Strength Steel)"]
+                },
+                kelebihan: ["Kabin paling lega di kelas LMPV", "Suspensi empuk & nyaman", "Fitur sangat lengkap", "ADAS sudah komplit", "IVT halus untuk harian dan tol"]
+            },
+
+            // NEW CRETA ALPHA IVT 2026
+            "new-creta-alpha": {
+                name: "NEW CRETA ALPHA IVT",
+                year: "2026",
+                condition: "Baru",
+                price: "Rp 469.900.000",
+                image: "https://i.ibb.co.com/Y7Vczjc1/IMG-20260509-WA0176.jpg",
+                specs: {
+                    "Mesin": "Smartstream 1.5L MPI, 1.497 cc, 4 silinder",
+                    "Tenaga": "115 PS",
+                    "Torsi": "143,8 Nm",
+                    "Transmisi": "Intelligent Variable Transmission (IVT)",
+                    "Penggerak": "Front Wheel Drive (FWD)",
+                    "Panjang": "4.330 mm",
+                    "Lebar": "1.790 mm",
+                    "Wheelbase": "2.610 mm",
+                    "Kapasitas": "5 Penumpang"
+                },
+                features: {
+                    exterior: ["Velg Alloy 17 Inci Dual Tone", "LED Headlamp & LED DRL", "LED Rear Combination Lamp", "Panoramic Sunroof", "Power Tailgate", "Grille & Bumper Model Terbaru Facelift 2026", "Roof Rail", "Shark Fin Antenna"],
+                    interior: ["Jok Kulit Premium", "Ventilated Seat (Pendingin Jok Depan)", "Driver Power Seat", "Full Digital Cluster", "Head Unit 10 Inci", "Wireless Charger", "Ambient Mood Lamp", "AC Digital Climate Control", "BOSE Premium Audio System", "Bluelink Connected Car"],
+                    safety: ["6 Airbags", "Forward Collision Avoidance Assist", "Lane Keeping Assist", "Blind Spot Collision Warning", "Rear Cross Traffic Alert", "Smart Cruise Control", "Electronic Parking Brake + Auto Hold", "TPMS"]
+                },
+                kelebihan: ["Varian tertinggi non N-Line", "Fitur premium lengkap", "Kabin nyaman", "Desain facelift terbaru 2026"]
+            },
+
+            // NEW CRETA N LINE IVT 2026
+            "new-creta-nline": {
+                name: "NEW CRETA N LINE IVT",
+                year: "2026",
+                condition: "Baru",
+                price: "Rp 486.500.000",
+                image: "https://i.ibb.co.com/Cc9WQSL/IMG-20260509-WA0177.jpg",
+                specs: {
+                    "Mesin": "Smartstream 1.5L MPI, 1.497 cc",
+                    "Tenaga": "115 PS @ 6.300 rpm",
+                    "Torsi": "143,8 Nm @ 4.500 rpm",
+                    "Transmisi": "Intelligent Variable Transmission (iVT)",
+                    "Drive Mode": "Eco, Normal, Sport, Smart",
+                    "Panjang": "4.330 mm",
+                    "Lebar": "1.790 mm",
+                    "Wheelbase": "2.610 mm"
+                },
+                features: {
+                    exterior: ["Body Kit Sporty khas N Line", "Grille N Line", "Velg Alloy 18 Inci", "Ban 215/55 R18", "Full LED Headlamp & DRL", "Rear Spoiler Sporty", "Dual Tone Roof", "Emblem N Line"],
+                    interior: ["Jok Kombinasi Kulit dengan Jahitan Merah", "Steering Wheel N Line", "Ambient Mood Lamp", "Panoramic Sunroof", "Wireless Charger", "Ventilated Seat Depan", "AC Digital Climate Control", "Start/Stop Engine Button", "Bose Premium Sound System"],
+                    teknologi: ["Layar Infotainment 10,25 Inci", "Apple CarPlay & Android Auto", "Bluelink Hyundai", "Voice Command", "Digital Instrument Cluster", "Kamera 360°", "Blind View Monitor"],
+                    safety: ["6 Airbags", "Forward Collision Avoidance Assist", "Lane Keeping Assist", "Lane Following Assist", "Blind Spot Collision Warning", "Rear Cross Traffic Alert", "Adaptive Cruise Control", "ABS + ESC + HAC"]
+                },
+                kelebihan: ["Tampilan sporty eksklusif", "Fitur ADAS lengkap", "Performa handling lebih baik", "Desain N Line yang agresif"]
+            },
+
+            // STARGAZER CARTENZ X PRIME IVT 2026
+            "stargazer-cartenz-x": {
+                name: "STARGAZER CARTENZ X PRIME IVT",
+                year: "2026",
+                condition: "Baru",
+                price: "Rp 413.600.000",
+                image: "https://i.ibb.co.com/Kj67xMc1/IMG-20260509-WA0178.jpg",
+                specs: {
+                    "Mesin": "Smartstream G1.5 MPI, 1.497 cc, 4 silinder",
+                    "Tenaga": "115 PS @ 6.300 rpm",
+                    "Torsi": "143,8 Nm @ 4.500 rpm",
+                    "Transmisi": "Intelligent Variable Transmission (IVT)",
+                    "Penggerak": "Front Wheel Drive (FWD)",
+                    "Panjang": "4.610 mm",
+                    "Lebar": "1.820 mm",
+                    "Tinggi": "1.740 mm",
+                    "Wheelbase": "2.780 mm",
+                    "Ground Clearance": "205 mm",
+                    "Kapasitas Bagasi": "185 Liter (baris ketiga tegak) / 585 Liter (baris ketiga dilipat)",
+                    "Suspensi Depan": "MacPherson Strut",
+                    "Suspensi Belakang": "CTBA",
+                    "Rem Depan": "Ventilated Disc",
+                    "Rem Belakang": "Solid Disc"
+                },
+                features: {
+                    exterior: ["Velg Alloy 17 Inci Black Gloss", "Ban 205/50 R17", "LED Headlamp & DRL", "LED Rear Combination Lamp", "Roof Rail", "Body Cladding ala Crossover", "Shark Fin Antenna", "Electric Folding Mirror"],
+                    interior: ["Captain Seat (opsional)", "Full Digital TFT Cluster", "Head Unit Floating Touchscreen", "Wireless Charger", "Ambient Mood Lamp", "Shift by Wire", "AC Digital Climate Control", "Rear AC Double Blower", "USB Charger Tiap Baris", "Bose Premium Sound System"],
+                    adas: ["Smart Cruise Control Stop & Go", "Forward Collision Avoidance Assist", "Lane Keeping Assist", "Lane Following Assist", "Blind Spot View Monitor", "Rear Cross Traffic Collision Avoidance", "Surround View Monitor / Kamera 360°", "Blind Spot Collision Avoidance"],
+                    safety: ["6 Airbags", "TPMS", "ESC & HAC", "EPB + Auto Hold"]
+                },
+                kelebihan: ["Kabin sangat lega", "Fitur paling lengkap di kelas LSUV", "ADAS cukup lengkap", "Nyaman untuk keluarga & perjalanan jauh", "Ground clearance tinggi 205 mm"]
+            },
+
+            // KONA EV PRIME LONG RANGE
+            "kona-ev": {
+                name: "KONA EV PRIME LONG RANGE",
+                year: "2026",
+                condition: "Baru",
+                price: "Rp 636.500.000",
+                image: "https://i.ibb.co.com/GQRL7FN9/IMG-20260509-WA0179.jpg",
+                specs: {
+                    "Motor": "Permanent Magnet Synchronous Motor",
+                    "Tenaga": "217 PS / 160 kW",
+                    "Torsi": "255 Nm",
+                    "Penggerak": "Front Wheel Drive (FWD)",
+                    "Transmisi": "Single Speed Reduction Gear",
+                    "Baterai": "66 kWh",
+                    "Jarak Tempuh": "±602 km (NEDC)",
+                    "AC Charging": "0-100% sekitar 6 jam",
+                    "DC Fast Charging": "10-80% dalam 40 menit",
+                    "Panjang": "4.355 mm",
+                    "Lebar": "1.825 mm",
+                    "Tinggi": "1.575 mm",
+                    "Wheelbase": "2.660 mm",
+                    "Kapasitas Bagasi": "466 liter",
+                    "Velg": "17 Inci"
+                },
+                features: {
+                    exterior: ["LED Headlamp & DRL", "Parametric Pixel Design", "Active Air Flap", "Roof Rail", "Electric Folding Mirror", "Rear Spoiler LED Stop Lamp"],
+                    interior: ["Dual Panoramic Display 12,3 Inci", "Wireless Apple CarPlay & Android Auto", "Shift-by-Wire", "Ambient Mood Lamp", "Wireless Charger", "Electric Parking Brake", "Auto Climate Control Dual Zone", "Jok Kulit", "Rear AC Vent", "Paddle Regenerative Braking"],
+                    safety: ["Forward Collision Avoidance Assist", "Lane Keeping Assist", "Lane Following Assist", "Driver Attention Warning", "Adaptive Cruise Control", "Rear Parking Sensor & Camera", "6 Airbags", "ABS + ESC + Hill Start Assist"]
+                },
+                kelebihan: ["Jarak tempuh sangat jauh di kelasnya", "Dimensi compact tapi kabin lega", "Handling stabil dan nyaman", "Irit biaya operasional"]
+            },
+
+            // PALISADE 2.2D XRT
+            "palisade-xrt": {
+                name: "PALISADE 2.2D XRT",
+                year: "2026",
+                condition: "Baru",
+                price: "Rp 1.144.400.000",
+                image: "https://i.ibb.co.com/VpzKc12S/IMG-20260509-WA0180.jpg",
+                specs: {
+                    "Mesin": "2.2L CRDi Diesel Turbo",
+                    "Kapasitas": "2.199 cc",
+                    "Tenaga": "197 PS / 197 hp",
+                    "Torsi": "440 Nm",
+                    "Transmisi": "Otomatis 8-percepatan",
+                    "Penggerak": "FWD",
+                    "Kapasitas Penumpang": "7 Seat",
+                    "Tangki BBM": "71 liter",
+                    "Ground Clearance": "±203 mm",
+                    "Velg": "20 Inci Black Alloy",
+                    "Panjang": "4.995 mm",
+                    "Lebar": "1.975 mm",
+                    "Tinggi": "1.750 mm",
+                    "Wheelbase": "2.900 mm"
+                },
+                features: {
+                    exterior: ["Grille Dark Chrome / Black Finish", "Bumper Depan Belakang Desain Sporty", "Roof Rail Hitam", "Emblem XRT", "Velg Hitam 20 Inci", "Body Kit Lebih Rugged", "Dominasi Aksen Black-Out Premium"],
+                    interior: ["Captain Seat Baris Kedua", "Jok Kulit Premium", "Ventilated & Heated Seat", "Dual Panoramic Display 12.3 Inci", "Bose Premium Audio", "Ambient Mood Lamp", "Wireless Charger", "Sunroof", "Electric Seat + Memory Seat", "3-Zone Climate Control", "Electric Tailgate"],
+                    safety: ["Forward Collision Avoidance Assist", "Blind Spot Collision Avoidance", "Lane Keeping Assist", "Smart Cruise Control", "Surround View Monitor / Kamera 360°", "Rear Cross Traffic Alert", "Parking Collision Avoidance", "Highway Driving Assist"]
+                },
+                kelebihan: ["Tampilan paling gagah dengan nuansa adventure", "Dominasi aksen hitam premium", "Fitur keselamatan lengkap", "Kabun luas dan mewah"]
+            },
+
+            // PALISADE HEV CALLIGRAPHY
+            "palisade-hev": {
+                name: "PALISADE HEV CALLIGRAPHY",
+                year: "2026",
+                condition: "Baru",
+                price: "Rp 1.330.500.000",
+                image: "https://i.ibb.co.com/vChhLwJf/IMG-20260509-WA0181.jpg",
+                specs: {
+                    "Mesin": "Smartstream 2.5L Turbo Hybrid",
+                    "Silinder": "4 silinder DOHC + Turbocharger",
+                    "Tenaga": "329-334 PS (gabungan)",
+                    "Torsi": "460 Nm (gabungan)",
+                    "Transmisi": "Otomatis 6-percepatan",
+                    "Panjang": "5.065 mm",
+                    "Lebar": "1.980 mm",
+                    "Tinggi": "1.805 mm",
+                    "Wheelbase": "2.970 mm",
+                    "Velg": "Alloy 21 Inci"
+                },
+                features: {
+                    exterior: ["LED Headlamp Premium", "Velg 21 Inci Calligraphy", "Desain Mewah Eksklusif"],
+                    interior: ["Captain Seat Baris Kedua", "Jok Nappa Leather Premium", "Heated & Ventilated Seats", "Electric Seat + Memory Seat", "Panoramic Curved Display", "Dual Sunroof", "Ambient Lighting", "Wireless Charger", "Bose Premium Audio 14 Speaker", "Digital Rear View Mirror", "Power Folding 3rd Row Seat"],
+                    teknologi: ["Dual Layar 12,3 Inci", "Wireless Apple CarPlay & Android Auto", "Hyundai Bluelink", "Digital Key 2.0", "USB-C Semua Baris", "Kamera 360°", "Remote Smart Parking Assist"],
+                    safety: ["Forward Collision Avoidance Assist", "Blind Spot Collision Avoidance", "Lane Keeping Assist", "Lane Following Assist", "Adaptive Cruise Control", "Rear Cross Traffic Alert", "Safe Exit Assist", "Parking Collision Avoidance Assist"]
+                },
+                kelebihan: ["Kabin sangat mewah & senyap", "Performa hybrid lebih responsif", "Irit untuk ukuran SUV besar", "Fitur paling lengkap di kelasnya", "Suspensi nyaman untuk perjalanan jauh"]
+            },
+
+            // STARGAZER ESSENTIAL IVT 2026
+            "stargazer-essential": {
+                name: "STARGAZER ESSENTIAL IVT",
+                year: "2026",
+                condition: "Baru",
+                price: "Rp 293.700.000",
+                image: "https://i.ibb.co.com/X1TVSpx/IMG-20260509-WA0182.jpg",
+                specs: {
+                    "Mesin": "Smartstream G1.5 MPI, 1.497 cc, 4 silinder",
+                    "Tenaga": "115 PS / 113 hp",
+                    "Torsi": "144 Nm",
+                    "Transmisi": "iVT (Intelligent Variable Transmission)",
+                    "Penggerak": "Front Wheel Drive",
+                    "Panjang": "4.460 mm",
+                    "Lebar": "1.780 mm",
+                    "Tinggi": "1.695 mm",
+                    "Wheelbase": "2.780 mm",
+                    "Ground Clearance": "195 mm",
+                    "Kapasitas": "7 Penumpang"
+                },
+                features: {
+                    exterior: ["Velg Alloy 16 Inci", "Lampu LED DRL", "Rear Spoiler", "Spion Elektrik + Retract", "Shark Fin Antenna"],
+                    interior: ["Captain Seat (opsional)", "AC Digital + Rear AC Vent", "Push Start Button", "Smart Key", "Wireless Charger", "Head Unit Touchscreen", "Apple CarPlay & Android Auto", "USB Charging Baris Kedua & Ketiga", "Setir Tilt & Telescopic"],
+                    safety: ["6 Airbags", "ABS + EBD", "ESC (Electronic Stability Control)", "Hill Start Assist", "Rear Camera", "Parking Distance Warning Depan & Belakang", "ISOFIX", "TPMS"],
+                    teknologi: ["Hyundai Bluelink", "Remote Engine Start", "Remote Window Control", "Voice Command", "Find My Car"]
+                },
+                kelebihan: ["Harga terjangkau", "Fitur cukup lengkap", "Kabin lega 7 penumpang", "Konsumsi BBM irit"]
+            },
+
+            // HYUNDAI STARIA 2.2D SIGNATURE
+            "staria-signature": {
+                name: "HYUNDAI STARIA 2.2D SIGNATURE",
+                year: "2026",
+                condition: "Baru",
+                price: "Rp 960.500.000",
+                image: "https://i.ibb.co.com/201dvB3z/IMG-20260509-WA0185.jpg",
+                variants: {
+                    "7 Seater": {
+                        price: "Rp 960.500.000",
+                        capacity: "7 Penumpang (Captain Seat Premium)",
+                        features: "Captain seat premium baris kedua dengan leg rest"
+                    },
+                    "9 Seater": {
+                        price: "Rp 910.000.000",
+                        capacity: "9 Penumpang (2-3-4 layout)",
+                        features: "Konfigurasi kursi 2-3-4, cocok untuk keluarga besar"
+                    }
+                },
+                specs: {
+                    "Mesin": "2.2L CRDi Diesel Turbo",
+                    "Kapasitas": "2.199 cc",
+                    "Tenaga": "177 PS @ 3.800 rpm",
+                    "Torsi": "430 Nm @ 1.500-2.500 rpm",
+                    "Transmisi": "8-speed Automatic Shift-by-wire",
+                    "Penggerak": "FWD (Front Wheel Drive)",
+                    "Drive Mode": "Eco, Normal, Sport",
+                    "Panjang": "5.253 mm",
+                    "Lebar": "1.997 mm",
+                    "Tinggi": "1.990 mm",
+                    "Wheelbase": "3.273 mm",
+                    "Tangki BBM": "75 liter",
+                    "Velg": "18 Inci",
+                    "Ban": "235/55 R18"
+                },
+                features: {
+                    exterior: ["LED Headlamp & DRL", "LED Rear Combination Lamp", "Power Sliding Door", "Dual Sunroof", "Smart Power Tailgate", "Roof Rail", "Desain Futuristik Spaceship"],
+                    interior: ["Captain Seat Premium (Signature 7 Seater)", "Panoramic Window", "Ambient Mood Lamp", "Wireless Charger", "Ventilated & Heated Seat", "Hyundai Bluelink", "Shift-by-wire"],
+                    audio: ["Bose Premium Sound System 12 Speaker"],
+                    safety: ["6 Airbags", "Forward Collision Avoidance Assist", "Blind Spot Collision Avoidance", "Lane Keeping Assist", "Smart Cruise Control", "360 Camera (tergantung varian)", "ESC + HAC", "TPMS"]
+                },
+                kelebihan: ["Kabin sangat luas & nyaman", "Suspensi empuk", "Desain futuristik seperti spaceship", "Mesin diesel bertenaga tapi halus", "Cocok untuk keluarga maupun VIP travel"]
+            }
+        };
+
+        // Variabel untuk menyimpan varian yang dipilih (khusus Staria)
+        let selectedVariant = "7 Seater";
+
+        // Ambil ID dari URL
+        function getCarId() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('id') || 'new-creta-prime';
+        }
+
+        // Render halaman detail
+        function renderDetail() {
+            const carId = getCarId();
+            const car = carDatabase[carId];
+            
+            if (!car) {
+                document.getElementById('detailContainer').innerHTML = `
+                    <div style="background:white; border-radius:20px; padding:2rem; text-align:center">
+                        <h2>😞 Mobil tidak ditemukan</h2>
+                        <a href="inventory.html" class="btn-back" style="display:inline-block; margin-top:1rem;">Kembali ke Inventory</a>
+                    </div>
+                `;
+                return;
+            }
+
+            document.getElementById('breadcrumb-name').innerText = car.name;
+
+            // Tentukan harga berdasarkan varian (khusus Staria)
+            let currentPrice = car.price;
+            if (car.variants && carId === "staria-signature") {
+                currentPrice = car.variants[selectedVariant].price;
+            }
+
+            // Generate spesifikasi
+            let specHtml = '';
+            for (const [key, value] of Object.entries(car.specs)) {
+                specHtml += `<div class="spec-item"><span class="spec-label">${key}</span><span class="spec-value">${value}</span></div>`;
+            }
+
+            // Generate fitur
+            let exteriorHtml = '', interiorHtml = '', teknologiHtml = '', audioHtml = '', adasHtml = '', safetyHtml = '', kelebihanHtml = '';
+            
+            if (car.features?.exterior && car.features.exterior.length > 0) {
+                exteriorHtml = `<div class="spec-section"><h3>✨ Eksterior</h3><div class="feature-list">${car.features.exterior.map(f => `<span class="feature-tag">${f}</span>`).join('')}</div></div>`;
+            }
+            
+            if (car.features?.interior && car.features.interior.length > 0) {
+                interiorHtml = `<div class="spec-section"><h3>🎵 Interior & Kenyamanan</h3><div class="feature-list">${car.features.interior.map(f => `<span class="feature-tag">${f}</span>`).join('')}</div></div>`;
+            }
+            
+            if (car.features?.teknologi && car.features.teknologi.length > 0) {
+                teknologiHtml = `<div class="spec-section"><h3>📱 Head Unit & Teknologi</h3><div class="feature-list">${car.features.teknologi.map(f => `<span class="feature-tag">${f}</span>`).join('')}</div></div>`;
+            }
+            
+            if (car.features?.audio && car.features.audio.length > 0) {
+                audioHtml = `<div class="spec-section"><h3>🎵 Audio System</h3><div class="feature-list">${car.features.audio.map(f => `<span class="feature-tag">${f}</span>`).join('')}</div></div>`;
+            }
+            
+            if (car.features?.adas && car.features.adas.length > 0) {
+                adasHtml = `<div class="spec-section"><h3>🛡️ Hyundai SmartSense (ADAS)</h3><div class="feature-list">${car.features.adas.map(f => `<span class="feature-tag adas">${f}</span>`).join('')}</div></div>`;
+            }
+            
+            if (car.features?.safety && car.features.safety.length > 0) {
+                safetyHtml = `<div class="spec-section"><h3>🛡️ Keselamatan</h3><div class="feature-list">${car.features.safety.map(f => `<span class="feature-tag safety">${f}</span>`).join('')}</div></div>`;
+            }
+            
+            if (car.kelebihan && car.kelebihan.length > 0) {
+                kelebihanHtml = `<div class="spec-section"><h3>⭐ Kelebihan</h3><div class="feature-list">${car.kelebihan.map(f => `<span class="feature-tag kelebihan">${f}</span>`).join('')}</div></div>`;
+            }
+
+            // Generate varian selector (khusus Staria)
+            let variantHtml = '';
+            if (car.variants && carId === "staria-signature") {
+                variantHtml = `
+                    <div class="variant-selector">
+                        <span style="font-weight:600;">Pilih Varian:</span>
+                        <button class="variant-btn ${selectedVariant === '7 Seater' ? 'active' : ''}" onclick="selectVariant('7 Seater')">7 Seater (Captain Seat)</button>
+                        <button class="variant-btn ${selectedVariant === '9 Seater' ? 'active' : ''}" onclick="selectVariant('9 Seater')">9 Seater (2-3-4)</button>
+                        <span style="font-size:0.75rem; color:#666;">${selectedVariant === '7 Seater' ? '✅ Kursi premium captain seat' : '✅ Kapasitas 9 penumpang'}</span>
+                    </div>
+                `;
+            }
+
+            // Nomor WhatsApp
+            const waNumber = "6285950830277";
+            const waMessage = `Halo HYUNDAI BATANG, saya tertarik dengan *${car.name}* (${car.year})${carId === "staria-signature" ? ` varian ${selectedVariant}` : ''} dengan harga *${currentPrice}*. Apakah masih tersedia? Saya ingin informasi lebih lanjut.`;
+            const waLink = `https://wa.me/${waNumber}?text=${encodeURIComponent(waMessage)}`;
+            
+            const testDriveMessage = `Halo HYUNDAI BATANG, saya ingin request *Test Drive* untuk mobil *${car.name}* (${car.year})${carId === "staria-signature" ? ` varian ${selectedVariant}` : ''}. Apakah bisa dijadwalkan?`;
+            const testDriveLink = `https://wa.me/${waNumber}?text=${encodeURIComponent(testDriveMessage)}`;
+
+            document.getElementById('detailContainer').innerHTML = `
+                <div class="car-gallery">
+                    <div class="main-image">
+                        <img src="${car.image}" alt="${car.name}" loading="lazy">
+                    </div>
+                </div>
+
+                <div class="car-info">
+                    <h1 class="car-title">${car.name}</h1>
+                    <span class="car-year">📅 ${car.year}</span>
+                    <span class="car-condition">🚗 ${car.condition}</span>
+                    ${variantHtml}
+                    <div class="price">${currentPrice} <small>(On The Road Batang)</small></div>
+                    
+                    <div class="action-buttons">
+                        <a href="${waLink}" class="btn btn-wa" target="_blank">
+                            💬 Beli via WhatsApp
+                        </a>
+                        <a href="${testDriveLink}" class="btn btn-testdrive" target="_blank">
+                            🚗 Request Test Drive
+                        </a>
+                    </div>
+                </div>
+
+                <div class="spec-section">
+                    <h3>⚙️ Spesifikasi Teknis</h3>
+                    <div class="spec-grid">${specHtml}</div>
+                </div>
+                
+                ${exteriorHtml}
+                ${interiorHtml}
+                ${teknologiHtml}
+                ${audioHtml}
+                ${adasHtml}
+                ${safetyHtml}
+                ${kelebihanHtml}
+
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-top: 0.5rem;">
+                    <a href="inventory.html" class="btn-back">← Kembali ke Koleksi Mobil</a>
+                    <a href="${waLink}" target="_blank" style="background:#25D366; color:white; padding:0.6rem 1.2rem; border-radius:12px; text-decoration:none; font-size:0.8rem; font-weight:bold; display:inline-flex; align-items:center; gap:0.5rem;">
+                        💬 Pesan Sekarang via WhatsApp
+                    </a>
+                </div>
+            `;
+        }
+
+        // Fungsi untuk memilih varian (khusus Staria)
+        function selectVariant(variant) {
+            selectedVariant = variant;
+            renderDetail();
+        }
+
+        // Menu toggle untuk mobile
+        const menuToggle = document.getElementById('menuToggle');
+        const nav = document.querySelector('nav');
+        if (menuToggle) {
+            menuToggle.addEventListener('click', () => nav.classList.toggle('show'));
+        }
+
+        // Back to top
+        window.addEventListener('scroll', () => {
+            const backToTop = document.getElementById('backToTop');
+            if (window.scrollY > 300) backToTop.classList.add('show');
+            else backToTop.classList.remove('show');
+        });
+        
+        document.getElementById('backToTop').addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Active link
+        const currentPage = window.location.pathname.split('/').pop() || 'detail-mobil.html';
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            const linkPage = link.getAttribute('href');
+            if (linkPage === currentPage) {
+                link.classList.add('active');
+            }
+        });
+
+        // Expose selectVariant ke global
+        window.selectVariant = selectVariant;
+
+        // Jalankan render
+        renderDetail();
+    </script>
+</body>
+</html>
