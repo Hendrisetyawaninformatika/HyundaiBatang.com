@@ -1,549 +1,118 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>HYUNDAI BATANG - Showroom Mobil Terpercaya</title>
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "Hyundai Batang",
-      "alternateName": ["Hyundai Batang. Com", "HyundaiBatang.com", "HB"],
-      "url": "https://hendrisetyawaninformatika.github.io/HyundaiBatang.com/"
-    }
-    </script>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HYUNDAI BATANG - Showroom Terpercaya</title>
+    
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+    
+    <script src="firebase-config.js"></script>
+
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f5f7fa; color: #1e2a3e; }
+        
+        header { background: #003d6b; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .logo h1 { font-size: 1.4rem; font-weight: bold; }
+        .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+        .nav-links a { color: rgba(255,255,255,0.8); text-decoration: none; font-size: 0.95rem; font-weight: 500; }
+        .nav-links a:hover, .nav-links a.active { color: white; }
+        .btn-admin-gate { background: #ff6b35; padding: 0.5rem 1rem; border-radius: 6px; color: white !important; font-weight: bold; }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f7fa;
-            color: #184a9f;
-        }
+        .hero { background: linear-gradient(rgba(0,61,107,0.8), rgba(0,61,107,0.9)), url('https://via.placeholder.com/1200x400') center/cover; text-align: center; padding: 5rem 1rem; color: white; }
+        .hero h2 { font-size: 2.2rem; margin-bottom: 0.5rem; }
 
-        header {
-            background: white;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            flex-wrap: wrap;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-        }
-
-        .logo-icon {
-            background: #003d6b;
-            color: white;
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-            font-weight: bold;
-        }
-
-        .logo-text h1 {
-            margin: 0;
-            font-size: 1.3rem;
-            color: #003d6b;
-        }
-
-        .logo-text p {
-            margin: 0;
-            font-size: 0.7rem;
-            color: #2b9f21;
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-            margin: 0;
-            padding: 0;
-        }
-
-        nav a {
-            text-decoration: none;
-            color: #333;
-            font-weight: 500;
-            padding: 0.5rem 0;
-            transition: color 0.3s;
-        }
-
-        nav a:hover, .nav-link.active {
-            color: #ff6b35;
-            border-bottom: 2px solid #ff6b35;
-        }
-
-        .menu-toggle {
-            display: none;
-            font-size: 1.8rem;
-            cursor: pointer;
-        }
-
-        /* Hero Section */
-        .hero {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            padding: 3rem 2rem;
-            background: linear-gradient(135deg, #003d6b 0%, #1e5a88 100%);
-            color: white;
-            min-height: 500px;
-        }
-
-        .hero-content {
-            flex: 1;
-            min-width: 300px;
-            padding-right: 2rem;
-        }
-
-        .hero-content h2 {
-            font-size: 2.8rem;
-            margin-bottom: 1rem;
-            line-height: 1.2;
-        }
-
-        .hero-content p {
-            font-size: 1.1rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-            line-height: 1.6;
-        }
-
-        .hero-buttons {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 0.9rem 2rem;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            cursor: pointer;
-            border: none;
-            font-size: 1rem;
-        }
-
-        .btn.primary {
-            background: #ff6b35;
-            color: white;
-            box-shadow: 0 4px 15px rgba(255,107,53,0.4);
-        }
-
-        .btn.primary:hover {
-            background: #e55a2b;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(255,107,53,0.5);
-        }
-
-        .btn.secondary {
-            background: transparent;
-            color: white;
-            border: 2px solid rgba(255,255,255,0.5);
-        }
-
-        .btn.secondary:hover {
-            background: white;
-            color: #003d6b;
-            transform: translateY(-3px);
-        }
-
-        .btn.whatsapp {
-            background: #25D366;
-            color: white;
-            box-shadow: 0 4px 15px rgba(37,211,102,0.4);
-        }
-
-        .btn.whatsapp:hover {
-            background: #1da851;
-            transform: translateY(-3px);
-        }
-
-        .hero-image {
-            flex: 1;
-            text-align: center;
-            min-width: 300px;
-        }
-
-        .hero-image img {
-            max-width: 100%;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-
-        /* Stats Section */
-        .stats {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around;
-            background: white;
-            padding: 2.5rem 2rem;
-            gap: 1.5rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            margin: -2rem 2rem 0;
-            border-radius: 20px;
-            position: relative;
-            z-index: 10;
-        }
-
-        .stat-item {
-            text-align: center;
-            flex: 1;
-            min-width: 120px;
-        }
-
-        .stat-item h3 {
-            font-size: 2.2rem;
-            color: #ff6b35;
-            margin-bottom: 0.3rem;
-        }
-
-        .stat-item p {
-            color: #666;
-            font-size: 0.9rem;
-        }
-
-        /* Featured Section */
-        .featured {
-            padding: 4rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .featured h2 {
-            text-align: center;
-            margin-bottom: 2.5rem;
-            color: #003d6b;
-            font-size: 2rem;
-        }
-
-        .car-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .car-card {
-            background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-            transition: all 0.3s;
-        }
-
-        .car-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 35px rgba(0,0,0,0.15);
-        }
-
-        .car-card img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-        }
-
-        .car-card h3 {
-            padding: 1rem 1rem 0.3rem;
-            font-size: 1.1rem;
-            color: #003d6b;
-        }
-
-        .car-card p {
-            padding: 0 1rem;
-            color: #28a745;
-            font-size: 0.85rem;
-            font-weight: bold;
-        }
-
-        .car-card .price {
-            padding: 0.5rem 1rem;
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #ff6b35;
-        }
-
-        .car-card .btn.small {
-            margin: 0 1rem 1rem;
-            padding: 0.5rem 1.2rem;
-            font-size: 0.85rem;
-            background: #003d6b;
-            color: white;
-            border-radius: 8px;
-            display: inline-block;
-        }
-
-        .car-card .btn.small:hover {
-            background: #ff6b35;
-        }
-
-        /* Contact Section */
-        .contact-info {
-            background: linear-gradient(135deg, #003d6b, #1e5a88);
-            color: white;
-            padding: 3rem 2rem;
-            text-align: center;
-        }
-
-        .contact-info h2 {
-            margin-bottom: 1.5rem;
-            font-size: 1.8rem;
-        }
-
-        .contact-details {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 2rem;
-        }
-
-        .contact-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 1rem;
-        }
-
-        .contact-details a {
-            color: white;
-            text-decoration: underline;
-        }
-
-        /* WhatsApp Floating Button */
-        .whatsapp-float {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            background: #25D366;
-            color: white;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 15px rgba(37,211,102,0.4);
-            transition: all 0.3s;
-            z-index: 999;
-            text-decoration: none;
-            font-size: 1.8rem;
-        }
-
-        .whatsapp-float:hover {
-            transform: scale(1.1) rotate(5deg);
-            box-shadow: 0 6px 20px rgba(37,211,102,0.5);
-        }
-
-        /* Footer */
-        footer {
-            background: #1e2a3e;
-            color: white;
-            text-align: center;
-            padding: 1.5rem;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .menu-toggle { display: block; }
-            nav { display: none; width: 100%; }
-            nav.show { display: block; position: absolute; top: 70px; left: 0; right: 0; background: white; padding: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-            nav.show ul { flex-direction: column; gap: 1rem; }
-            .hero-content h2 { font-size: 1.8rem; }
-            .stats { margin: -1rem 1rem 0; padding: 1.5rem; }
-            .hero { padding: 2rem 1rem; }
-        }
+        .catalog-container { max-width: 1200px; margin: 3rem auto; padding: 0 1rem; }
+        .section-title { margin-bottom: 2rem; font-size: 1.5rem; border-left: 4px solid #ff6b35; padding-left: 0.5rem; }
+        
+        .car-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2rem; }
+        .car-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.3s; cursor: pointer; display: flex; flex-direction: column; }
+        .car-card:hover { transform: translateY(-5px); }
+        .car-img-box { width: 100%; height: 180px; position: relative; background: #eee; }
+        .car-img-box img { width: 100%; height: 100%; object-fit: cover; }
+        .badge-cond { position: absolute; top: 10px; left: 10px; background: #ff6b35; color: white; padding: 0.2rem 0.6rem; font-size: 0.75rem; border-radius: 4px; font-weight: bold; }
+        .badge-status { position: absolute; top: 10px; right: 10px; background: #28a745; color: white; padding: 0.2rem 0.6rem; font-size: 0.75rem; border-radius: 4px; font-weight: bold; }
+        
+        .car-body { padding: 1.2rem; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .car-name { font-size: 1.15rem; font-weight: bold; color: #003d6b; margin-bottom: 0.5rem; }
+        .car-price { font-size: 1.2rem; font-weight: 800; color: #ff6b35; margin-bottom: 0.8rem; }
+        .car-meta { display: flex; justify-content: space-between; font-size: 0.8rem; color: #6c757d; border-top: 1px solid #eee; padding-top: 0.8rem; }
+        
+        .empty-view { text-align: center; color: gray; grid-column: 1 / -1; padding: 4rem 0; }
     </style>
 </head>
 <body>
+
     <header>
         <div class="logo">
-            <div class="logo-icon">H</div>
-            <div class="logo-text">
-                <h1>HYUNDAI BATANG</h1>
-                <p>Your Trusted Car Dealer</p>
-            </div>
+            <h1>HYUNDAI BATANG</h1>
         </div>
-        <nav id="mainNav">
-            <ul>
-                <li><a href="index.html" class="nav-link active">🏠 Home</a></li>
-                <li><a href="about.html" class="nav-link">📖 About</a></li>
-                <li><a href="inventory.html" class="nav-link">📦 Inventory</a></li>
-                <li><a href="login-firebase.html" id="adminLink">🔐 Admin</a></li>
-            </ul>
+        <nav class="nav-links">
+            <a href="index.html" class="active">Katalog Produk</a>
+            <a href="dashboard-firebase.html" class="btn-admin-gate" id="gateText">🔐 Panel Admin</a>
         </nav>
-        <div class="menu-toggle" id="menuToggle">☰</div>
     </header>
 
-    <main>
-        <section class="hero">
-            <div class="hero-content">
-                <h2>Dapatkan Mobil Impianmu</h2>
-                <p>Koleksi mobil baru Hyundai berkualitas dengan harga terbaik. Proses mudah, aman, dan terpercaya di Batang.</p>
-                <div class="hero-buttons">
-                    <a href="inventory.html" class="btn primary">🚗 Lihat Koleksi →</a>
-                    <a href="https://wa.me/6285950830277?text=Halo%20HYUNDAI%20BATANG,%20saya%20tertarik%20membeli%20mobil" class="btn whatsapp" target="_blank">💬 Hubungi Sales</a>
-                </div>
-            </div>
-            <div class="hero-image">
-                <img src="https://i.ibb.co.com/YB51M399/IMG-20260509-WA0193-1.jpg" alt="HYUNDAI BATANG Showroom">
-            </div>
-        </section>
+    <section class="hero">
+        <h2>Temukan Armada Hyundai Impian Anda</h2>
+        <p>Layanan Showroom Transparan, Realtime & Terpercaya di Batang</p>
+    </section>
 
-        <section class="stats">
-            <div class="stat-item">
-                <h3>500+</h3>
-                <p>Mobil Terjual</p>
-            </div>
-            <div class="stat-item">
-                <h3>98%</h3>
-                <p>Kepuasan Pelanggan</p>
-            </div>
-            <div class="stat-item">
-                <h3>10+</h3>
-                <p>Tahun Pengalaman</p>
-            </div>
-            <div class="stat-item">
-                <h3>50+</h3>
-                <p>Pilihan Model</p>
-            </div>
-        </section>
-
-        <section class="featured">
-            <h2>🚗 Featured Cars Hyundai Batang</h2>
-            <div class="car-grid">
-                <div class="car-card">
-                    <img src="https://i.ibb.co.com/VcGFZNFL/IMG-20260509-WA0173.jpg" alt="New Creta Prime IVT">
-                    <h3>New Creta Prime IVT</h3>
-                    <p>Baru</p>
-                    <div class="price">Rp 453.400.000</div>
-                    <a href="detail-mobil.html?id=new-creta-prime" class="btn small">Lihat Detail →</a>
-                </div>
-                <div class="car-card">
-                    <img src="https://i.ibb.co.com/chYmPnK7/IMG-20260509-WA0172-1.jpg" alt="Stargazer Cartenz Prime">
-                    <h3>Stargazer Cartenz Prime IVT HSS</h3>
-                    <p>Baru</p>
-                    <div class="price">Rp 370.300.000</div>
-                    <a href="detail-mobil.html?id=stargazer-cartenz-prime" class="btn small">Lihat Detail →</a>
-                </div>
-                <div class="car-card">
-                    <img src="https://i.ibb.co.com/Y7Vczjc1/IMG-20260509-WA0176.jpg" alt="New Creta Alpha IVT">
-                    <h3>New Creta Alpha IVT</h3>
-                    <p>Baru</p>
-                    <div class="price">Rp 469.900.000</div>
-                    <a href="detail-mobil.html?id=new-creta-alpha" class="btn small">Lihat Detail →</a>
-                </div>
-                <div class="car-card">
-                    <img src="https://i.ibb.co.com/Cc9WQSL/IMG-20260509-WA0177.jpg" alt="New Creta N Line IVT">
-                    <h3>New Creta N Line IVT</h3>
-                    <p>Baru</p>
-                    <div class="price">Rp 486.500.000</div>
-                    <a href="detail-mobil.html?id=new-creta-nline" class="btn small">Lihat Detail →</a>
-                </div>
-                <div class="car-card">
-                    <img src="https://i.ibb.co.com/Kj67xMc1/IMG-20260509-WA0178.jpg" alt="Stargazer Cartenz X Prime">
-                    <h3>Stargazer Cartenz X Prime IVT</h3>
-                    <p>Baru</p>
-                    <div class="price">Rp 413.600.000</div>
-                    <a href="detail-mobil.html?id=stargazer-cartenz-x" class="btn small">Lihat Detail →</a>
-                </div>
-                <div class="car-card">
-                    <img src="https://i.ibb.co.com/GQRL7FN9/IMG-20260509-WA0179.jpg" alt="Kona EV Prime">
-                    <h3>Kona EV Prime Long Range</h3>
-                    <p>Baru</p>
-                    <div class="price">Rp 636.500.000</div>
-                    <a href="detail-mobil.html?id=kona-ev" class="btn small">Lihat Detail →</a>
-                </div>
-            </div>
-            <div style="text-align:center; margin-top:2rem;">
-                <a href="inventory.html" class="btn primary">📦 Lihat Semua Mobil →</a>
-            </div>
-        </section>
-
-        <section id="contact" class="contact-info">
-            <h2>📞 Hubungi Kami Sekarang</h2>
-            <div class="contact-details">
-                <div class="contact-item">📱 <a href="https://wa.me/6285950830277" target="_blank">+62 859-5083-0277 (WhatsApp)</a></div>
-                <div class="contact-item">📞 +62 812-4814-1031</div>
-                <div class="contact-item">📍 <a href="https://www.google.com/maps/search/?api=1&query=Jl.+Jendral+Sudirman.245A,+Batang" target="_blank">Jl. Jendral Sudirman 245A, Batang</a></div>
-            </div>
-        </section>
+    <main class="catalog-container">
+        <h3 class="section-title">Koleksi Unit Showroom Berjalan</h3>
+        <div class="car-grid" id="publicProductGrid">
+            <div class="empty-view">Sedang menghubungkan ke server katalog...</div>
+        </div>
     </main>
 
-    <footer>
-        <p>&copy; 2026 HYUNDAI BATANG - Showroom Mobil Terpercaya | FAJAR HYUNDAI BATANG</p>
-    </footer>
-
-    <!-- WhatsApp Floating Button -->
-    <a href="https://wa.me/6285950830277?text=Halo%20HYUNDAI%20BATANG,%20saya%20tertarik%20membeli%20mobil" target="_blank" class="whatsapp-float" title="Chat WhatsApp">
-        💬
-    </a>
-
-    <!-- Firebase Logout Script -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyDu4hHrtvn3R0kpZXE5JVN-XxhmCurp69o",
-            authDomain: "mobilproject-e25d1.firebaseapp.com",
-            databaseURL: "https://mobilproject-e25d1-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "mobilproject-e25d1",
-            storageBucket: "mobilproject-e25d1.firebasestorage.app",
-            messagingSenderId: "465335606485",
-            appId: "1:465335606485:web:fcf52bb8a24ef63ea8965c"
-        };
-        
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        
+        // Mengubah tampilan tombol login secara dinamis
         auth.onAuthStateChanged(user => {
-            const adminLink = document.getElementById('adminLink');
-            if (user) {
-                if (adminLink) {
-                    adminLink.innerHTML = '🚪 Logout';
-                    adminLink.href = '#';
-                    adminLink.onclick = function(e) {
-                        e.preventDefault();
-                        auth.signOut().then(() => {
-                            alert('✅ Berhasil logout!');
-                            window.location.reload();
-                        });
-                    };
-                }
+            const gateText = document.getElementById('gateText');
+            if(user) {
+                gateText.innerHTML = "📊 Masuk Dashboard";
+                gateText.style.background = "#28a745";
             } else {
-                if (adminLink) {
-                    adminLink.innerHTML = '🔐 Admin';
-                    adminLink.href = 'login-firebase.html';
-                    adminLink.onclick = null;
-                }
+                gateText.innerHTML = "🔐 Panel Admin";
+                gateText.style.background = "#ff6b35";
             }
         });
 
-        // Menu toggle
-        document.getElementById('menuToggle').addEventListener('click', function() {
-            document.getElementById('mainNav').classList.toggle('show');
+        // Ambil data real-time untuk pembeli
+        db.ref('cars').on('value', snapshot => {
+            const grid = document.getElementById('publicProductGrid');
+            const data = snapshot.val();
+            
+            if(!data) {
+                grid.innerHTML = `<div class="empty-view"><h3>Maaf, katalog produk sedang kosong</h3><p>Silakan hubungi admin kami untuk informasi ketersediaan unit terbaru.</p></div>`;
+                return;
+            }
+
+            const list = Object.keys(data).map(k => ({id: k, ...data[k]}));
+            
+            grid.innerHTML = list.map(car => `
+                <div class="car-card" onclick="window.location.href='detail-mobil.html?id=${car.id}'">
+                    <div class="car-img-box">
+                        <img src="${car.image}" onerror="this.src='https://via.placeholder.com/300x180?text=Hyundai+Batang'">
+                        <span class="badge-cond">${car.condition || 'Baru'}</span>
+                        <span class="badge-status" style="background:${car.status==='Tersedia'?'#28a745':car.status==='Terjual'?'#dc3545':'#ffc107'}">${car.status || 'Tersedia'}</span>
+                    </div>
+                    <div class="car-body">
+                        <div>
+                            <h4 class="car-name">${car.name}</h4>
+                            <div class="car-price">Rp ${parseInt(car.price || 0).toLocaleString('id-ID')}</div>
+                        </div>
+                        <div class="car-meta">
+                            <span>📅 Tahun ${car.year}</span>
+                            <span>⚙️ ${car.transmission || 'IVT'}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
         });
     </script>
 </body>
-</html>'''
-
+</html>
