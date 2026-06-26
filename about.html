@@ -1,0 +1,309 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tentang Kami | HYUNDAI BATANG</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+        }
+
+        header {
+            background: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .logo-icon {
+            background: #003d6b;
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .logo-text h1 { font-size: 1.3rem; color: #003d6b; margin: 0; }
+        .logo-text p { font-size: 0.7rem; color: #28a745; margin: 0; }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            padding: 0.5rem 0;
+            transition: color 0.3s;
+            font-size: 0.95rem;
+        }
+
+        nav a:hover, nav a.active {
+            color: #ff6b35;
+            border-bottom: 2px solid #ff6b35;
+        }
+
+        #adminLink {
+            background: linear-gradient(135deg, #003d6b, #1e5a88);
+            color: white !important;
+            padding: 0.5rem 1rem !important;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        #adminLink:hover {
+            background: linear-gradient(135deg, #ff6b35, #e55a2b);
+        }
+
+        .menu-toggle {
+            display: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, #003d6b, #1e5a88);
+            color: white;
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .page-header h2 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .page-header p { opacity: 0.9; font-size: 1.1rem; }
+
+        .about-content {
+            display: flex;
+            gap: 3rem;
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+        }
+
+        .about-text { flex: 2; min-width: 300px; }
+        .about-text h3 { color: #003d6b; margin: 1.5rem 0 0.8rem; font-size: 1.3rem; }
+        .about-text h3:first-child { margin-top: 0; }
+        .about-text p { line-height: 1.7; color: #555; margin-bottom: 1rem; }
+        .about-text ul { padding-left: 1.5rem; }
+        .about-text li { margin: 0.6rem 0; color: #555; }
+
+        .service-badge {
+            display: inline-block;
+            background: #e8f4fd;
+            color: #003d6b;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin: 0.3rem 0.3rem 0.3rem 0;
+        }
+
+        .about-image { flex: 1; min-width: 300px; }
+        .about-image img {
+            max-width: 100%;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            margin-bottom: 1rem;
+        }
+
+        .caption { font-size: 0.8rem; color: #888; text-align: center; }
+
+        .contact-info {
+            background: linear-gradient(135deg, #003d6b, #1e5a88);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .contact-info h2 { margin-bottom: 1.5rem; }
+        .contact-details {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .contact-item { font-size: 1rem; }
+        .contact-item a { color: #25D366; text-decoration: none; font-weight: 600; }
+
+        footer {
+            background: #1e2a3e;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .whatsapp-float {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #25D366;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            box-shadow: 0 4px 15px rgba(37,211,102,0.4);
+            transition: all 0.3s;
+            z-index: 999;
+            text-decoration: none;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle { display: block; }
+            nav { display: none; width: 100%; }
+            nav.show { display: block; position: absolute; top: 70px; left: 0; right: 0; background: white; padding: 1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+            nav.show ul { flex-direction: column; gap: 1rem; }
+            .about-content { flex-direction: column; padding: 2rem 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <div class="logo-icon">H</div>
+            <div class="logo-text">
+                <h1>HYUNDAI BATANG</h1>
+                <p>Dealer Mobil Resmi</p>
+            </div>
+        </div>
+        <nav id="mainNav">
+            <ul>
+                <li><a href="index.html">🏠 Home</a></li>
+                <li><a href="about.html" class="active">📖 About</a></li>
+                <li><a href="inventory.html">📦 Inventory</a></li>
+                <li><a href="login-firebase.html" id="adminLink">🔐 Admin</a></li>
+            </ul>
+        </nav>
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    </header>
+
+    <section class="page-header">
+        <h2>Tentang HYUNDAI BATANG</h2>
+        <p>Dealer Resmi Hyundai | Penjualan Mobil Baru Terpercaya</p>
+    </section>
+
+    <section class="about-content">
+        <div class="about-text">
+            <h3>🚗 Siapa Kami?</h3>
+            <p><strong>HYUNDAI BATANG</strong> adalah dealer resmi mobil baru HYUNDAI yang berdiri sejak tahun 2016. Kami berkomitmen memberikan pengalaman terbaik dalam penjualan mobil baru dengan pelayanan profesional, transparan, dan ramah.</p>
+
+            <h3>✨ Mengapa Memilih Kami?</h3>
+            <ul>
+                <li>✅ <strong>Mobil Baru 100%</strong> - Bukan mobil bekas</li>
+                <li>✅ <strong>Garansi Resmi Hyundai</strong> - 5 tahun atau 150.000 km</li>
+                <li>✅ <strong>Proses Kredit Mudah</strong> - Bunga rendah</li>
+                <li>✅ <strong>Test Drive Gratis</strong></li>
+                <li>✅ <strong>Pengiriman Gratis</strong> ke seluruh Batang</li>
+            </ul>
+
+            <h3>🛠️ Layanan Kami</h3>
+            <p>
+                <span class="service-badge">🚗 Penjualan Mobil Baru</span>
+                <span class="service-badge">📋 Kredit & Leasing</span>
+                <span class="service-badge">🔧 Service & Perawatan</span>
+                <span class="service-badge">🛡️ Asuransi</span>
+                <span class="service-badge">📝 Balik Nama</span>
+                <span class="service-badge">🚚 Pengiriman Mobil</span>
+            </p>
+
+            <h3>🕐 Jam Operasional</h3>
+            <p><strong>Senin - Sabtu:</strong> 09.00 - 18.00<br>
+            <strong>Minggu & Libur:</strong> Tutup<br>
+            <strong>Darurat:</strong> 24 jam via WhatsApp</p>
+
+            <h3>📞 Hubungi Kami</h3>
+            <p>📱 WhatsApp: <a href="https://wa.me/6285950830277" style="color:#25D366; text-decoration:none; font-weight:bold;">0859-5083-0277</a><br>
+            📧 Email: sales@hyundaibatang.com</p>
+        </div>
+        <div class="about-image">
+            <img src="https://radarpekalongan.disway.id/upload/06fc8e4f2cfd074bed40b628951bbee1.jpg" alt="Showroom HYUNDAI BATANG">
+            <p class="caption">Showroom HYUNDAI BATANG - Dealer Resmi</p>
+        </div>
+    </section>
+
+    <section class="contact-info">
+        <h2>💬 Hubungi Sales Fajar Sekarang</h2>
+        <div class="contact-details">
+            <div class="contact-item">📞 <a href="https://wa.me/6285950830277">WhatsApp: 0859-5083-0277</a></div>
+            <div class="contact-item">📍 Jl. Jendral Sudirman 245A, Batang</div>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2026 HYUNDAI BATANG - Dealer Resmi Mobil Baru | Admin: Sales Fajar</p>
+    </footer>
+
+    <a href="https://wa.me/6285950830277?text=Halo%20HYUNDAI%20BATANG" class="whatsapp-float" target="_blank">💬</a>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDu4hHrtvn3R0kpZXE5JVN-XxhmCurp69o",
+            authDomain: "mobilproject-e25d1.firebaseapp.com",
+            databaseURL: "https://mobilproject-e25d1-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "mobilproject-e25d1",
+            storageBucket: "mobilproject-e25d1.firebasestorage.app",
+            messagingSenderId: "465335606485",
+            appId: "1:465335606485:web:fcf52bb8a24ef63ea8965c"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        auth.onAuthStateChanged(user => {
+            const adminLink = document.getElementById('adminLink');
+            if (user) {
+                adminLink.innerHTML = '🚪 Logout';
+                adminLink.href = '#';
+                adminLink.onclick = function(e) {
+                    e.preventDefault();
+                    auth.signOut().then(() => { alert('✅ Berhasil logout!'); window.location.reload(); });
+                };
+            } else {
+                adminLink.innerHTML = '🔐 Admin';
+                adminLink.href = 'login-firebase.html';
+                adminLink.onclick = null;
+            }
+        });
+        function toggleMenu() { document.getElementById('mainNav').classList.toggle('show'); }
+    </script>
+</body>
+</html>'''
+
