@@ -1,0 +1,1487 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Dashboard Admin | HYUNDAI BATANG</title>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --primary: #003d6b;
+            --primary-light: #1e5a88;
+            --accent: #ff6b35;
+            --accent-hover: #e55a2b;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --info: #17a2b8;
+            --dark: #1e2a3e;
+            --gray: #6c757d;
+            --light: #f8f9fa;
+            --border: #dee2e6;
+            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+            --shadow-lg: 0 10px 40px rgba(0,0,0,0.12);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            color: #333;
+            min-height: 100vh;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            position: fixed;
+            left: 0; top: 0; bottom: 0;
+            width: 260px;
+            background: linear-gradient(180deg, var(--dark) 0%, #0f1a2e 100%);
+            color: white;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .sidebar-header .logo-icon {
+            width: 45px; height: 45px;
+            background: var(--accent);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; font-weight: bold;
+        }
+
+        .sidebar-header .brand h2 { font-size: 1.1rem; margin: 0; }
+        .sidebar-header .brand p { font-size: 0.7rem; opacity: 0.7; margin: 0; }
+
+        .sidebar-nav { flex: 1; padding: 1rem 0; overflow-y: auto; }
+
+        .nav-item {
+            display: flex; align-items: center; gap: 0.8rem;
+            padding: 0.9rem 1.5rem;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            background: none; border: none; width: 100%; text-align: left;
+            font-size: 0.9rem;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255,255,255,0.08);
+            color: white;
+            border-left-color: var(--accent);
+        }
+
+        .nav-item .icon { font-size: 1.3rem; width: 24px; text-align: center; }
+        .nav-item .label { font-size: 0.9rem; font-weight: 500; }
+
+        .sidebar-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .user-info {
+            display: flex; align-items: center; gap: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .user-avatar {
+            width: 40px; height: 40px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 1rem;
+            overflow: hidden;
+        }
+
+        .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+        .user-details h4 { font-size: 0.85rem; margin: 0; }
+        .user-details p { font-size: 0.7rem; opacity: 0.6; margin: 0; }
+
+        .btn-logout {
+            width: 100%; padding: 0.7rem;
+            background: rgba(220,53,69,0.2);
+            color: #ff6b6b;
+            border: 1px solid rgba(220,53,69,0.3);
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.85rem; font-weight: 600;
+            transition: all 0.3s;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+        }
+
+        .btn-logout:hover { background: rgba(220,53,69,0.3); }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            margin-left: 260px;
+            min-height: 100vh;
+            transition: margin-left 0.3s;
+        }
+
+        .top-bar {
+            background: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0; z-index: 100;
+        }
+
+        .top-bar-left { display: flex; align-items: center; gap: 1rem; }
+
+        .menu-toggle {
+            display: none;
+            background: none; border: none;
+            font-size: 1.5rem; cursor: pointer;
+            color: var(--dark);
+        }
+
+        .page-title { font-size: 1.3rem; color: var(--dark); font-weight: 700; }
+        .breadcrumb { font-size: 0.8rem; color: var(--gray); }
+
+        .top-bar-right { display: flex; align-items: center; gap: 1rem; }
+
+        .sync-status {
+            display: flex; align-items: center; gap: 0.4rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .sync-status.online {
+            background: #d4edda; color: #155724;
+        }
+
+        .sync-status.offline {
+            background: #fff3cd; color: #856404;
+        }
+
+        .sync-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .sync-status.online .sync-dot { background: var(--success); }
+        .sync-status.offline .sync-dot { background: var(--warning); animation: none; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* ===== CONTENT ===== */
+        .content-wrapper { padding: 2rem; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            display: flex; align-items: center; gap: 1rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-icon {
+            width: 56px; height: 56px;
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem;
+        }
+
+        .stat-icon.blue { background: linear-gradient(135deg, #e3f2fd, #bbdefb); }
+        .stat-icon.green { background: linear-gradient(135deg, #e8f5e9, #c8e6c9); }
+        .stat-icon.orange { background: linear-gradient(135deg, #fff3e0, #ffe0b2); }
+        .stat-icon.red { background: linear-gradient(135deg, #ffebee, #ffcdd2); }
+
+        .stat-info h3 { font-size: 1.8rem; color: var(--dark); margin: 0; }
+        .stat-info p { color: var(--gray); font-size: 0.85rem; margin: 0; }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap; gap: 1rem;
+        }
+
+        .section-title { font-size: 1.2rem; color: var(--dark); font-weight: 700; }
+
+        .section-actions { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+
+        .btn {
+            padding: 0.7rem 1.2rem;
+            border-radius: 10px;
+            border: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center; gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            color: white;
+            box-shadow: 0 4px 15px rgba(255,107,53,0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255,107,53,0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--dark);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover { background: var(--light); }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #218838);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #c82333);
+            color: white;
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, var(--info), #138496);
+            color: white;
+        }
+
+        .btn-sm { padding: 0.4rem 0.8rem; font-size: 0.75rem; }
+
+        .filter-bar {
+            background: white;
+            padding: 1rem 1.5rem;
+            border-radius: 14px;
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.7rem 1rem 0.7rem 2.5rem;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0,61,107,0.1);
+        }
+
+        .search-box .search-icon {
+            position: absolute;
+            left: 0.8rem; top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .filter-select {
+            padding: 0.7rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            background: white;
+            cursor: pointer;
+            min-width: 140px;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .data-table { width: 100%; border-collapse: collapse; }
+
+        .data-table thead {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+        }
+
+        .data-table th {
+            padding: 1rem 1.2rem;
+            text-align: left;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .data-table td {
+            padding: 1rem 1.2rem;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9rem;
+            vertical-align: middle;
+        }
+
+        .data-table tbody tr { transition: background 0.2s; }
+        .data-table tbody tr:hover { background: #f8f9ff; }
+        .data-table tbody tr:last-child td { border-bottom: none; }
+
+        .car-thumb {
+            width: 80px; height: 55px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .car-name { font-weight: 600; color: var(--dark); }
+
+        .car-type {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .type-suv { background: #e3f2fd; color: #1565c0; }
+        .type-mpv { background: #e8f5e9; color: #2e7d32; }
+        .type-ev { background: #fff3e0; color: #ef6c00; }
+        .type-sedan { background: #f3e5f5; color: #7b1fa2; }
+
+        .price-tag { font-weight: 700; color: var(--accent); font-size: 0.95rem; }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center; gap: 0.3rem;
+            padding: 0.3rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-available { background: #d4edda; color: #155724; }
+        .status-sold { background: #f8d7da; color: #721c24; }
+        .status-pending { background: #fff3cd; color: #856404; }
+
+        .action-btns { display: flex; gap: 0.4rem; }
+
+        .btn-icon {
+            width: 34px; height: 34px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .btn-edit { background: #e3f2fd; color: #1565c0; }
+        .btn-edit:hover { background: #1565c0; color: white; }
+
+        .btn-delete { background: #ffebee; color: #c62828; }
+        .btn-delete:hover { background: #c62828; color: white; }
+
+        .btn-view { background: #e8f5e9; color: #2e7d32; }
+        .btn-view:hover { background: #2e7d32; color: white; }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .empty-state .icon { font-size: 4rem; margin-bottom: 1rem; opacity: 0.3; }
+        .empty-state h3 { color: var(--gray); margin-bottom: 0.5rem; }
+        .empty-state p { color: #aaa; font-size: 0.9rem; }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 1.5rem;
+        }
+
+        .page-btn {
+            padding: 0.5rem 0.9rem;
+            border: 1px solid var(--border);
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+
+        .page-btn:hover, .page-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .modal-overlay.show { display: flex; opacity: 1; }
+
+        .modal {
+            background: white;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            transform: scale(0.9) translateY(20px);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.show .modal { transform: scale(1) translateY(0); }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 { font-size: 1.2rem; color: var(--dark); }
+
+        .modal-close {
+            background: none; border: none;
+            font-size: 1.5rem; cursor: pointer;
+            color: var(--gray);
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .modal-close:hover { background: var(--light); color: var(--dark); }
+
+        .modal-body { padding: 1.5rem; }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-group { margin-bottom: 1.2rem; }
+        .form-group.full { grid-column: 1 / -1; }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.4rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-group label .required { color: var(--danger); }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0,61,107,0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .image-preview {
+            width: 100%; height: 160px;
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            color: var(--gray);
+            cursor: pointer;
+            transition: all 0.3s;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .image-preview:hover {
+            border-color: var(--primary);
+            background: #f8f9ff;
+        }
+
+        .image-preview img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0; left: 0;
+        }
+
+        .image-preview .placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            z-index: 1;
+        }
+
+        .image-preview.has-image .placeholder { display: none; }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.8rem;
+        }
+
+        /* ===== DELETE CONFIRM MODAL ===== */
+        .confirm-modal .modal {
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .confirm-modal .modal-body { padding: 2rem; }
+
+        .confirm-icon {
+            width: 70px; height: 70px;
+            background: #ffebee;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 1rem;
+        }
+
+        .confirm-modal h3 { color: var(--dark); margin-bottom: 0.5rem; }
+        .confirm-modal p { color: var(--gray); font-size: 0.9rem; margin-bottom: 1.5rem; }
+
+        /* ===== TOAST ===== */
+        .toast-container {
+            position: fixed;
+            top: 20px; right: 20px;
+            z-index: 3000;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .toast {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center; gap: 0.8rem;
+            min-width: 300px;
+            animation: toastSlide 0.4s ease-out;
+            border-left: 4px solid;
+        }
+
+        .toast.success { border-left-color: var(--success); }
+        .toast.error { border-left-color: var(--danger); }
+        .toast.warning { border-left-color: var(--warning); }
+        .toast.info { border-left-color: var(--info); }
+
+        @keyframes toastSlide {
+            from { opacity: 0; transform: translateX(100px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .toast-icon { font-size: 1.3rem; }
+
+        .toast-content h4 { font-size: 0.9rem; margin: 0; color: var(--dark); }
+        .toast-content p { font-size: 0.8rem; color: var(--gray); margin: 0; }
+
+        /* ===== LOADING OVERLAY ===== */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255,255,255,0.9);
+            z-index: 2500;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .loading-overlay.show { display: flex; }
+
+        .loading-spinner-large {
+            width: 50px; height: 50px;
+            border: 4px solid #e0e0e0;
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.show { transform: translateX(0); }
+            .main-content { margin-left: 0; }
+            .menu-toggle { display: block; }
+            .form-row { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .content-wrapper { padding: 1rem; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .data-table { display: block; overflow-x: auto; }
+            .filter-bar { flex-direction: column; align-items: stretch; }
+            .search-box { min-width: 100%; }
+            .section-header { flex-direction: column; align-items: stretch; }
+            .section-actions { justify-content: stretch; }
+            .section-actions .btn { flex: 1; justify-content: center; }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .top-bar { padding: 0.8rem 1rem; }
+            .modal { border-radius: 16px; }
+            .modal-header, .modal-body, .modal-footer { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner-large"></div>
+        <p style="color: var(--gray); font-size: 0.9rem;">Menyinkronkan dengan Firebase...</p>
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-icon">H</div>
+            <div class="brand">
+                <h2>HYUNDAI BATANG</h2>
+                <p>Admin Dashboard</p>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <button class="nav-item active" onclick="showSection('dashboard')">
+                <span class="icon">📊</span>
+                <span class="label">Dashboard</span>
+            </button>
+            <button class="nav-item" onclick="showSection('cars')">
+                <span class="icon">🚗</span>
+                <span class="label">Kelola Mobil</span>
+            </button>
+            <button class="nav-item" onclick="showSection('orders')">
+                <span class="icon">📋</span>
+                <span class="label">Pesanan</span>
+            </button>
+            <button class="nav-item" onclick="showSection('customers')">
+                <span class="icon">👥</span>
+                <span class="label">Pelanggan</span>
+            </button>
+            <button class="nav-item" onclick="showSection('reports')">
+                <span class="icon">📈</span>
+                <span class="label">Laporan</span>
+            </button>
+            <button class="nav-item" onclick="showSection('settings')">
+                <span class="icon">⚙️</span>
+                <span class="label">Pengaturan</span>
+            </button>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">A</div>
+                <div class="user-details">
+                    <h4 id="userName">Admin</h4>
+                    <p id="userEmail">admin@hyundaibatang.com</p>
+                </div>
+            </div>
+            <button class="btn-logout" onclick="logout()">
+                <span>🚪</span> Keluar
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="top-bar">
+            <div class="top-bar-left">
+                <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                <div>
+                    <h1 class="page-title" id="pageTitle">Dashboard</h1>
+                    <div class="breadcrumb">HYUNDAI BATANG / <span id="breadcrumbText">Dashboard</span></div>
+                </div>
+            </div>
+            <div class="top-bar-right">
+                <div class="sync-status online" id="syncStatus">
+                    <span class="sync-dot"></span>
+                    <span>Realtime Sync</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-wrapper" id="contentArea">
+            <!-- Dashboard Section -->
+            <div id="dashboard-section">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon blue">🚗</div>
+                        <div class="stat-info">
+                            <h3 id="totalCars">0</h3>
+                            <p>Total Mobil</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green">✅</div>
+                        <div class="stat-info">
+                            <h3 id="availableCars">0</h3>
+                            <p>Tersedia</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange">📋</div>
+                        <div class="stat-info">
+                            <h3 id="totalOrders">0</h3>
+                            <p>Pesanan Baru</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon red">💰</div>
+                        <div class="stat-info">
+                            <h3 id="totalRevenue">Rp 0</h3>
+                            <p>Estimasi Penjualan</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <h2 class="section-title">📦 Daftar Mobil</h2>
+                    <div class="section-actions">
+                        <button class="btn btn-secondary" onclick="syncData()">
+                            <span>🔄</span> Sync
+                        </button>
+                        <button class="btn btn-primary" onclick="openModal()">
+                            <span>➕</span> Tambah Mobil
+                        </button>
+                    </div>
+                </div>
+
+                <div class="filter-bar">
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="searchInput" placeholder="Cari mobil..." onkeyup="filterCars()">
+                    </div>
+                    <select class="filter-select" id="typeFilter" onchange="filterCars()">
+                        <option value="">Semua Tipe</option>
+                        <option value="SUV">SUV</option>
+                        <option value="MPV">MPV</option>
+                        <option value="EV">Listrik (EV)</option>
+                        <option value="Sedan">Sedan</option>
+                    </select>
+                    <select class="filter-select" id="statusFilter" onchange="filterCars()">
+                        <option value="">Semua Status</option>
+                        <option value="Tersedia">Tersedia</option>
+                        <option value="Terjual">Terjual</option>
+                        <option value="Pending">Pending</option>
+                    </select>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Mobil</th>
+                                <th>Tipe</th>
+                                <th>Tahun</th>
+                                <th>Harga</th>
+                                <th>Status</th>
+                                <th style="text-align:center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="carTableBody">
+                            <!-- Data dari Firebase -->
+                        </tbody>
+                    </table>
+                    <div id="emptyState" class="empty-state" style="display:none">
+                        <div class="icon">🚗</div>
+                        <h3>Tidak ada mobil ditemukan</h3>
+                        <p>Data mobil akan muncul di sini setelah disinkronkan dengan Firebase</p>
+                    </div>
+                </div>
+
+                <div class="pagination" id="pagination"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add/Edit Modal -->
+    <div class="modal-overlay" id="carModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalTitle">➕ Tambah Mobil Baru</h3>
+                <button class="modal-close" onclick="closeModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="carForm">
+                    <input type="hidden" id="carId">
+                    <div class="form-row">
+                        <div class="form-group full">
+                            <label>Gambar Mobil <span class="required">*</span></label>
+                            <div class="image-preview" id="imagePreview" onclick="document.getElementById('carImage').click()">
+                                <div class="placeholder">
+                                    <span style="font-size:2rem">📷</span>
+                                    <span>Klik untuk upload gambar</span>
+                                    <span style="font-size:0.75rem;color:#aaa">atau paste URL gambar</span>
+                                </div>
+                            </div>
+                            <input type="file" id="carImage" accept="image/*" style="display:none" onchange="previewImage(event)">
+                            <input type="text" id="imageUrl" placeholder="https://..." style="margin-top:0.5rem" onchange="previewImageUrl(this.value)">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nama Mobil <span class="required">*</span></label>
+                            <input type="text" id="carName" placeholder="Contoh: New Creta Prime IVT" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Tipe <span class="required">*</span></label>
+                            <select id="carType" required>
+                                <option value="">Pilih Tipe</option>
+                                <option value="SUV">SUV</option>
+                                <option value="MPV">MPV</option>
+                                <option value="EV">Listrik (EV)</option>
+                                <option value="Sedan">Sedan</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Tahun <span class="required">*</span></label>
+                            <input type="number" id="carYear" placeholder="2026" min="2015" max="2030" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Harga (Rp) <span class="required">*</span></label>
+                            <input type="text" id="carPrice" placeholder="453.400.000" required oninput="formatPrice(this)">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Kondisi</label>
+                            <select id="carCondition">
+                                <option value="Baru">Baru</option>
+                                <option value="Bekas">Bekas</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select id="carStatus">
+                                <option value="Tersedia">Tersedia</option>
+                                <option value="Terjual">Terjual</option>
+                                <option value="Pending">Pending</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Mesin</label>
+                            <input type="text" id="carEngine" placeholder="1.500cc">
+                        </div>
+                        <div class="form-group">
+                            <label>Transmisi</label>
+                            <select id="carTransmission">
+                                <option value="Automatic">Automatic</option>
+                                <option value="Manual">Manual</option>
+                                <option value="CVT">CVT</option>
+                                <option value="IVT">IVT</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group full">
+                        <label>Deskripsi / Spesifikasi</label>
+                        <textarea id="carDesc" placeholder="Deskripsi singkat mobil..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Batal</button>
+                <button class="btn btn-primary" onclick="saveCar()">
+                    <span>💾</span> Simpan ke Firebase
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirm Modal -->
+    <div class="modal-overlay confirm-modal" id="deleteModal">
+        <div class="modal">
+            <div class="modal-body">
+                <div class="confirm-icon">🗑️</div>
+                <h3>Hapus Mobil?</h3>
+                <p>Apakah Anda yakin ingin menghapus mobil <strong id="deleteCarName">-</strong> dari Firebase? Tindakan ini tidak dapat dibatalkan.</p>
+                <div style="display:flex;gap:0.8rem;justify-content:center;margin-top:1.5rem">
+                    <button class="btn btn-secondary" onclick="closeDeleteModal()">Batal</button>
+                    <button class="btn btn-danger" onclick="confirmDelete()">
+                        <span>🗑️</span> Ya, Hapus
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 🔥 FIREBASE CONFIG - GANTI DENGAN CONFIG ANDA
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "hyundai-batang.firebaseapp.com",
+            databaseURL: "https://hyundai-batang-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "hyundai-batang",
+            storageBucket: "hyundai-batang.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.database();
+        const carsRef = db.ref('cars');
+
+        // ===== AUTH CHECK =====
+        auth.onAuthStateChanged(user => {
+            if (!user) {
+                window.location.href = 'login-firebase.html';
+                return;
+            }
+            // Update user info
+            document.getElementById('userName').textContent = user.displayName || user.email.split('@')[0];
+            document.getElementById('userEmail').textContent = user.email;
+            if (user.photoURL) {
+                document.getElementById('userAvatar').innerHTML = `<img src="${user.photoURL}" alt="Avatar">`;
+            } else {
+                document.getElementById('userAvatar').textContent = (user.displayName || user.email)[0].toUpperCase();
+            }
+        });
+
+        // ===== DATA =====
+        let cars = [];
+        let currentPage = 1;
+        const itemsPerPage = 10;
+        let editingId = null;
+        let deletingId = null;
+
+        // ===== FIREBASE REALTIME LISTENERS =====
+        function setupRealtimeListener() {
+            showLoading(true);
+            
+            carsRef.on('value', snapshot => {
+                const data = snapshot.val();
+                cars = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
+                updateStats();
+                renderTable();
+                showLoading(false);
+                showToast('success', 'Sync Berhasil!', 'Data mobil telah disinkronkan dengan Firebase');
+            }, error => {
+                showLoading(false);
+                showToast('error', 'Sync Gagal!', error.message);
+                console.error('Firebase error:', error);
+            });
+
+            // Connection status
+            db.ref('.info/connected').on('value', snap => {
+                const status = document.getElementById('syncStatus');
+                if (snap.val() === true) {
+                    status.className = 'sync-status online';
+                    status.innerHTML = '<span class="sync-dot"></span><span>Realtime Sync</span>';
+                } else {
+                    status.className = 'sync-status offline';
+                    status.innerHTML = '<span class="sync-dot"></span><span>Offline Mode</span>';
+                }
+            });
+        }
+
+        // ===== CRUD OPERATIONS =====
+        
+        // CREATE - Tambah mobil baru ke Firebase
+        function createCar(carData) {
+            const newCarRef = carsRef.push();
+            return newCarRef.set({
+                ...carData,
+                createdAt: firebase.database.ServerValue.TIMESTAMP,
+                updatedAt: firebase.database.ServerValue.TIMESTAMP
+            });
+        }
+
+        // UPDATE - Update mobil di Firebase
+        function updateCar(carId, carData) {
+            return carsRef.child(carId).update({
+                ...carData,
+                updatedAt: firebase.database.ServerValue.TIMESTAMP
+            });
+        }
+
+        // DELETE - Hapus mobil dari Firebase
+        function deleteCarFromFirebase(carId) {
+            return carsRef.child(carId).remove();
+        }
+
+        // SYNC - Sinkronisasi manual
+        function syncData() {
+            showLoading(true);
+            carsRef.once('value')
+                .then(snapshot => {
+                    const data = snapshot.val();
+                    cars = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
+                    updateStats();
+                    renderTable();
+                    showLoading(false);
+                    showToast('success', 'Sync Berhasil!', ` ${cars.length} mobil tersinkronisasi`);
+                })
+                .catch(error => {
+                    showLoading(false);
+                    showToast('error', 'Sync Gagal!', error.message);
+                });
+        }
+
+        // ===== UI FUNCTIONS =====
+        function updateStats() {
+            document.getElementById('totalCars').textContent = cars.length;
+            document.getElementById('availableCars').textContent = cars.filter(c => c.status === 'Tersedia').length;
+            
+            let total = 0;
+            cars.forEach(c => {
+                const price = parseInt(c.price.replace(/[^0-9]/g, ''));
+                total += price;
+            });
+            document.getElementById('totalRevenue').textContent = 'Rp ' + total.toLocaleString('id-ID');
+        }
+
+        function renderTable() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const typeFilter = document.getElementById('typeFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+
+            let filtered = cars.filter(car => {
+                const matchSearch = car.name.toLowerCase().includes(searchTerm);
+                const matchType = !typeFilter || car.type === typeFilter;
+                const matchStatus = !statusFilter || car.status === statusFilter;
+                return matchSearch && matchType && matchStatus;
+            });
+
+            const tbody = document.getElementById('carTableBody');
+            const emptyState = document.getElementById('emptyState');
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '';
+                emptyState.style.display = 'block';
+                document.getElementById('pagination').style.display = 'none';
+                return;
+            }
+            emptyState.style.display = 'none';
+
+            const start = (currentPage - 1) * itemsPerPage;
+            const paginated = filtered.slice(start, start + itemsPerPage);
+
+            tbody.innerHTML = paginated.map(car => `
+                <tr>
+                    <td>
+                        <div style="display:flex;align-items:center;gap:0.8rem">
+                            <img src="${car.image}" alt="${car.name}" class="car-thumb" onerror="this.src='https://via.placeholder.com/80x55?text=No+Image'">
+                            <div>
+                                <div class="car-name">${car.name}</div>
+                                <div style="font-size:0.75rem;color:#888">${car.engine || '-'} • ${car.transmission || '-'}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td><span class="car-type type-${car.type.toLowerCase()}">${car.type}</span></td>
+                    <td>${car.year}</td>
+                    <td><span class="price-tag">Rp ${car.price}</span></td>
+                    <td><span class="status-badge status-${car.status.toLowerCase()}">● ${car.status}</span></td>
+                    <td>
+                        <div class="action-btns">
+                            <button class="btn-icon btn-view" onclick="viewCar('${car.id}')" title="Lihat">👁</button>
+                            <button class="btn-icon btn-edit" onclick="editCar('${car.id}')" title="Edit">✏️</button>
+                            <button class="btn-icon btn-delete" onclick="deleteCar('${car.id}')" title="Hapus">🗑</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+
+            renderPagination(filtered.length);
+        }
+
+        function renderPagination(totalItems) {
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+            const pagination = document.getElementById('pagination');
+            
+            if (totalPages <= 1) {
+                pagination.style.display = 'none';
+                return;
+            }
+            pagination.style.display = 'flex';
+
+            let html = `<button class="page-btn" onclick="changePage(-1)" ${currentPage === 1 ? 'disabled' : ''}>← Prev</button>`;
+            for (let i = 1; i <= totalPages; i++) {
+                html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+            }
+            html += `<button class="page-btn" onclick="changePage(1)" ${currentPage === totalPages ? 'disabled' : ''}>Next →</button>`;
+            pagination.innerHTML = html;
+        }
+
+        function changePage(dir) {
+            currentPage += dir;
+            renderTable();
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            renderTable();
+        }
+
+        function filterCars() {
+            currentPage = 1;
+            renderTable();
+        }
+
+        // ===== MODAL FUNCTIONS =====
+        function openModal(carId = null) {
+            editingId = carId;
+            const modal = document.getElementById('carModal');
+            const title = document.getElementById('modalTitle');
+            const preview = document.getElementById('imagePreview');
+            
+            if (carId) {
+                const car = cars.find(c => c.id === carId);
+                title.textContent = '✏️ Edit Mobil';
+                document.getElementById('carId').value = car.id;
+                document.getElementById('carName').value = car.name;
+                document.getElementById('carType').value = car.type;
+                document.getElementById('carYear').value = car.year;
+                document.getElementById('carPrice').value = car.price;
+                document.getElementById('carCondition').value = car.condition || 'Baru';
+                document.getElementById('carStatus').value = car.status || 'Tersedia';
+                document.getElementById('carEngine').value = car.engine || '';
+                document.getElementById('carTransmission').value = car.transmission || 'Automatic';
+                document.getElementById('carDesc').value = car.desc || '';
+                document.getElementById('imageUrl').value = car.image;
+                
+                preview.innerHTML = `<img src="${car.image}" alt="Preview" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`;
+                preview.classList.add('has-image');
+            } else {
+                title.textContent = '➕ Tambah Mobil Baru';
+                document.getElementById('carForm').reset();
+                document.getElementById('carId').value = '';
+                document.getElementById('carYear').value = '2026';
+                document.getElementById('imageUrl').value = '';
+                preview.innerHTML = `
+                    <div class="placeholder">
+                        <span style="font-size:2rem">📷</span>
+                        <span>Klik untuk upload gambar</span>
+                        <span style="font-size:0.75rem;color:#aaa">atau paste URL gambar</span>
+                    </div>`;
+                preview.classList.remove('has-image');
+            }
+            
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('carModal').classList.remove('show');
+            document.body.style.overflow = '';
+            editingId = null;
+        }
+
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('imagePreview');
+                    preview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+                    preview.classList.add('has-image');
+                    document.getElementById('imageUrl').value = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function previewImageUrl(url) {
+            if (url) {
+                const preview = document.getElementById('imagePreview');
+                preview.innerHTML = `<img src="${url}" alt="Preview" onerror="this.style.display='none';this.parentElement.classList.remove('has-image');this.parentElement.querySelector('.placeholder').style.display='flex'">`;
+                preview.classList.add('has-image');
+            }
+        }
+
+        function formatPrice(input) {
+            let value = input.value.replace(/[^0-9]/g, '');
+            if (value) {
+                input.value = parseInt(value).toLocaleString('id-ID');
+            }
+        }
+
+        // ===== SAVE CAR (CREATE/UPDATE) =====
+        function saveCar() {
+            const name = document.getElementById('carName').value.trim();
+            const type = document.getElementById('carType').value;
+            const year = document.getElementById('carYear').value;
+            const price = document.getElementById('carPrice').value.replace(/[^0-9]/g, '');
+            const image = document.getElementById('imageUrl').value || 'https://via.placeholder.com/300x200?text=No+Image';
+
+            if (!name || !type || !year || !price) {
+                showToast('error', 'Gagal!', 'Mohon lengkapi semua field yang wajib diisi.');
+                return;
+            }
+
+            const carData = {
+                name: name,
+                type: type,
+                year: year,
+                price: price,
+                condition: document.getElementById('carCondition').value,
+                status: document.getElementById('carStatus').value,
+                engine: document.getElementById('carEngine').value || '-',
+                transmission: document.getElementById('carTransmission').value,
+                image: image,
+                desc: document.getElementById('carDesc').value || ''
+            };
+
+            showLoading(true);
+
+            if (editingId) {
+                // UPDATE ke Firebase
+                updateCar(editingId, carData)
+                    .then(() => {
+                        showLoading(false);
+                        showToast('success', 'Berhasil!', `Mobil "${name}" telah diperbarui di Firebase.`);
+                        closeModal();
+                    })
+                    .catch(error => {
+                        showLoading(false);
+                        showToast('error', 'Gagal!', error.message);
+                    });
+            } else {
+                // CREATE ke Firebase
+                createCar(carData)
+                    .then(() => {
+                        showLoading(false);
+                        showToast('success', 'Berhasil!', `Mobil "${name}" telah ditambahkan ke Firebase.`);
+                        closeModal();
+                    })
+                    .catch(error => {
+                        showLoading(false);
+                        showToast('error', 'Gagal!', error.message);
+                    });
+            }
+        }
+
+        function editCar(id) {
+            openModal(id);
+        }
+
+        function deleteCar(id) {
+            const car = cars.find(c => c.id === id);
+            deletingId = id;
+            document.getElementById('deleteCarName').textContent = car.name;
+            document.getElementById('deleteModal').classList.add('show');
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('show');
+            deletingId = null;
+        }
+
+        function confirmDelete() {
+            if (deletingId) {
+                const car = cars.find(c => c.id === deletingId);
+                showLoading(true);
+                
+                deleteCarFromFirebase(deletingId)
+                    .then(() => {
+                        showLoading(false);
+                        showToast('success', 'Terhapus!', `Mobil "${car.name}" telah dihapus dari Firebase.`);
+                        closeDeleteModal();
+                    })
+                    .catch(error => {
+                        showLoading(false);
+                        showToast('error', 'Gagal!', error.message);
+                    });
+            }
+        }
+
+        function viewCar(id) {
+            const car = cars.find(c => c.id === id);
+            showToast('info', 'Detail Mobil', `${car.name} - Rp ${car.price}`);
+        }
+
+        // ===== TOAST =====
+        function showToast(type, title, message) {
+            const container = document.getElementById('toastContainer');
+            const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <span class="toast-icon">${icons[type]}</span>
+                <div class="toast-content">
+                    <h4>${title}</h4>
+                    <p>${message}</p>
+                </div>
+            `;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        // ===== LOADING =====
+        function showLoading(show) {
+            const overlay = document.getElementById('loadingOverlay');
+            if (show) overlay.classList.add('show');
+            else overlay.classList.remove('show');
+        }
+
+        // ===== SIDEBAR =====
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('show');
+        }
+
+        function showSection(section) {
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            event.target.closest('.nav-item').classList.add('active');
+            
+            const titles = {
+                'dashboard': 'Dashboard',
+                'cars': 'Kelola Mobil',
+                'orders': 'Pesanan',
+                'customers': 'Pelanggan',
+                'reports': 'Laporan',
+                'settings': 'Pengaturan'
+            };
+            
+            document.getElementById('pageTitle').textContent = titles[section] || 'Dashboard';
+            document.getElementById('breadcrumbText').textContent = titles[section] || 'Dashboard';
+            
+            if (section === 'dashboard' || section === 'cars') {
+                document.getElementById('dashboard-section').style.display = 'block';
+            } else {
+                document.getElementById('dashboard-section').style.display = 'none';
+                showToast('info', 'Info', 'Fitur ' + titles[section] + ' sedang dalam pengembangan.');
+            }
+            
+            if (window.innerWidth <= 1024) {
+                document.getElementById('sidebar').classList.remove('show');
+            }
+        }
+
+        function logout() {
+            auth.signOut().then(() => {
+                window.location.href = 'login-firebase.html';
+            });
+        }
+
+        // Close modal on overlay click
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    if (this.id === 'carModal') closeModal();
+                    if (this.id === 'deleteModal') closeDeleteModal();
+                }
+            });
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+                closeDeleteModal();
+            }
+        });
+
+        // Init
+        setupRealtimeListener();
+    </script>
+</body>
+</html>'''
+

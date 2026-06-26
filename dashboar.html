@@ -1,0 +1,1628 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Dashboard Admin | HYUNDAI BATANG</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #003d6b;
+            --primary-light: #1e5a88;
+            --accent: #ff6b35;
+            --accent-hover: #e55a2b;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --info: #17a2b8;
+            --dark: #1e2a3e;
+            --gray: #6c757d;
+            --light: #f8f9fa;
+            --border: #dee2e6;
+            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+            --shadow-lg: 0 10px 40px rgba(0,0,0,0.12);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            color: #333;
+            min-height: 100vh;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 260px;
+            background: linear-gradient(180deg, var(--dark) 0%, #0f1a2e 100%);
+            color: white;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .sidebar-header .logo-icon {
+            width: 45px;
+            height: 45px;
+            background: var(--accent);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .sidebar-header .brand h2 {
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        .sidebar-header .brand p {
+            font-size: 0.7rem;
+            opacity: 0.7;
+            margin: 0;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 1rem 0;
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.9rem 1.5rem;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255,255,255,0.08);
+            color: white;
+            border-left-color: var(--accent);
+        }
+
+        .nav-item .icon {
+            font-size: 1.3rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .nav-item .label {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .sidebar-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .user-details h4 {
+            font-size: 0.85rem;
+            margin: 0;
+        }
+
+        .user-details p {
+            font-size: 0.7rem;
+            opacity: 0.6;
+            margin: 0;
+        }
+
+        .btn-logout {
+            width: 100%;
+            padding: 0.7rem;
+            background: rgba(220,53,69,0.2);
+            color: #ff6b6b;
+            border: 1px solid rgba(220,53,69,0.3);
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-logout:hover {
+            background: rgba(220,53,69,0.3);
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            margin-left: 260px;
+            min-height: 100vh;
+            transition: margin-left 0.3s;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .top-bar-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--dark);
+        }
+
+        .page-title {
+            font-size: 1.3rem;
+            color: var(--dark);
+            font-weight: 700;
+        }
+
+        .breadcrumb {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        .top-bar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .notification-btn {
+            position: relative;
+            background: none;
+            border: none;
+            font-size: 1.3rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 10px;
+            transition: background 0.3s;
+        }
+
+        .notification-btn:hover {
+            background: var(--light);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 18px;
+            height: 18px;
+            background: var(--danger);
+            color: white;
+            border-radius: 50%;
+            font-size: 0.65rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* ===== DASHBOARD CONTENT ===== */
+        .content-wrapper {
+            padding: 2rem;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+
+        .stat-icon.blue { background: linear-gradient(135deg, #e3f2fd, #bbdefb); }
+        .stat-icon.green { background: linear-gradient(135deg, #e8f5e9, #c8e6c9); }
+        .stat-icon.orange { background: linear-gradient(135deg, #fff3e0, #ffe0b2); }
+        .stat-icon.red { background: linear-gradient(135deg, #ffebee, #ffcdd2); }
+
+        .stat-info h3 {
+            font-size: 1.8rem;
+            color: var(--dark);
+            margin: 0;
+        }
+
+        .stat-info p {
+            color: var(--gray);
+            font-size: 0.85rem;
+            margin: 0;
+        }
+
+        /* Section Header */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            color: var(--dark);
+            font-weight: 700;
+        }
+
+        .section-actions {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.7rem 1.2rem;
+            border-radius: 10px;
+            border: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            color: white;
+            box-shadow: 0 4px 15px rgba(255,107,53,0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255,107,53,0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--dark);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--light);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #218838);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #c82333);
+            color: white;
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, var(--info), #138496);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.75rem;
+        }
+
+        /* Search & Filter */
+        .filter-bar {
+            background: white;
+            padding: 1rem 1.5rem;
+            border-radius: 14px;
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.7rem 1rem 0.7rem 2.5rem;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0,61,107,0.1);
+        }
+
+        .search-box .search-icon {
+            position: absolute;
+            left: 0.8rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .filter-select {
+            padding: 0.7rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            background: white;
+            cursor: pointer;
+            min-width: 140px;
+        }
+
+        /* Table */
+        .table-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table thead {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+        }
+
+        .data-table th {
+            padding: 1rem 1.2rem;
+            text-align: left;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .data-table td {
+            padding: 1rem 1.2rem;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9rem;
+            vertical-align: middle;
+        }
+
+        .data-table tbody tr {
+            transition: background 0.2s;
+        }
+
+        .data-table tbody tr:hover {
+            background: #f8f9ff;
+        }
+
+        .data-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .car-thumb {
+            width: 80px;
+            height: 55px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .car-name {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .car-type {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .type-suv { background: #e3f2fd; color: #1565c0; }
+        .type-mpv { background: #e8f5e9; color: #2e7d32; }
+        .type-ev { background: #fff3e0; color: #ef6c00; }
+        .type-sedan { background: #f3e5f5; color: #7b1fa2; }
+
+        .price-tag {
+            font-weight: 700;
+            color: var(--accent);
+            font-size: 0.95rem;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.3rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-available {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-sold {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 0.4rem;
+        }
+
+        .btn-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .btn-edit {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .btn-edit:hover {
+            background: #1565c0;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .btn-delete:hover {
+            background: #c62828;
+            color: white;
+        }
+
+        .btn-view {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .btn-view:hover {
+            background: #2e7d32;
+            color: white;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .empty-state .icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        .empty-state h3 {
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 1.5rem;
+        }
+
+        .page-btn {
+            padding: 0.5rem 0.9rem;
+            border: 1px solid var(--border);
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+
+        .page-btn:hover, .page-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            transform: scale(0.9) translateY(20px);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.show .modal {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 1.2rem;
+            color: var(--dark);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .modal-close:hover {
+            background: var(--light);
+            color: var(--dark);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.4rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-group label .required {
+            color: var(--danger);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0,61,107,0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .image-preview {
+            width: 100%;
+            height: 160px;
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            color: var(--gray);
+            cursor: pointer;
+            transition: all 0.3s;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .image-preview:hover {
+            border-color: var(--primary);
+            background: #f8f9ff;
+        }
+
+        .image-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .image-preview .placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            z-index: 1;
+        }
+
+        .image-preview.has-image .placeholder {
+            display: none;
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.8rem;
+        }
+
+        /* ===== DELETE CONFIRM MODAL ===== */
+        .confirm-modal .modal {
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .confirm-modal .modal-body {
+            padding: 2rem;
+        }
+
+        .confirm-icon {
+            width: 70px;
+            height: 70px;
+            background: #ffebee;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 1rem;
+        }
+
+        .confirm-modal h3 {
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .confirm-modal p {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* ===== TOAST NOTIFICATION ===== */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 3000;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .toast {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            min-width: 300px;
+            animation: toastSlide 0.4s ease-out;
+            border-left: 4px solid;
+        }
+
+        .toast.success { border-left-color: var(--success); }
+        .toast.error { border-left-color: var(--danger); }
+        .toast.warning { border-left-color: var(--warning); }
+        .toast.info { border-left-color: var(--info); }
+
+        @keyframes toastSlide {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .toast-icon {
+            font-size: 1.3rem;
+        }
+
+        .toast-content h4 {
+            font-size: 0.9rem;
+            margin: 0;
+            color: var(--dark);
+        }
+
+        .toast-content p {
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin: 0;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .menu-toggle {
+                display: block;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .content-wrapper {
+                padding: 1rem;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .data-table {
+                display: block;
+                overflow-x: auto;
+            }
+            .filter-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .search-box {
+                min-width: 100%;
+            }
+            .section-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .section-actions {
+                justify-content: stretch;
+            }
+            .section-actions .btn {
+                flex: 1;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .top-bar {
+                padding: 0.8rem 1rem;
+            }
+            .modal {
+                border-radius: 16px;
+            }
+            .modal-header, .modal-body, .modal-footer {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-icon">H</div>
+            <div class="brand">
+                <h2>HYUNDAI BATANG</h2>
+                <p>Admin Dashboard</p>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active" onclick="showSection('dashboard')">
+                <span class="icon">📊</span>
+                <span class="label">Dashboard</span>
+            </a>
+            <a href="#" class="nav-item" onclick="showSection('cars')">
+                <span class="icon">🚗</span>
+                <span class="label">Kelola Mobil</span>
+            </a>
+            <a href="#" class="nav-item" onclick="showSection('orders')">
+                <span class="icon">📋</span>
+                <span class="label">Pesanan</span>
+            </a>
+            <a href="#" class="nav-item" onclick="showSection('customers')">
+                <span class="icon">👥</span>
+                <span class="label">Pelanggan</span>
+            </a>
+            <a href="#" class="nav-item" onclick="showSection('reports')">
+                <span class="icon">📈</span>
+                <span class="label">Laporan</span>
+            </a>
+            <a href="#" class="nav-item" onclick="showSection('settings')">
+                <span class="icon">⚙️</span>
+                <span class="label">Pengaturan</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <div class="user-avatar">A</div>
+                <div class="user-details">
+                    <h4 id="adminName">Admin</h4>
+                    <p>Super Admin</p>
+                </div>
+            </div>
+            <button class="btn-logout" onclick="logout()">
+                <span>🚪</span> Keluar
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="top-bar-left">
+                <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                <div>
+                    <h1 class="page-title" id="pageTitle">Dashboard</h1>
+                    <div class="breadcrumb">HYUNDAI BATANG / <span id="breadcrumbText">Dashboard</span></div>
+                </div>
+            </div>
+            <div class="top-bar-right">
+                <button class="notification-btn">
+                    🔔
+                    <span class="notification-badge">3</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content-wrapper" id="contentArea">
+            <!-- Dashboard Section -->
+            <div id="dashboard-section">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon blue">🚗</div>
+                        <div class="stat-info">
+                            <h3 id="totalCars">10</h3>
+                            <p>Total Mobil</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green">✅</div>
+                        <div class="stat-info">
+                            <h3 id="availableCars">10</h3>
+                            <p>Tersedia</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange">📋</div>
+                        <div class="stat-info">
+                            <h3 id="totalOrders">0</h3>
+                            <p>Pesanan Baru</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon red">💰</div>
+                        <div class="stat-info">
+                            <h3 id="totalRevenue">Rp 0</h3>
+                            <p>Estimasi Penjualan</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <h2 class="section-title">📦 Daftar Mobil Terbaru</h2>
+                    <div class="section-actions">
+                        <button class="btn btn-primary" onclick="openModal()">
+                            <span>➕</span> Tambah Mobil
+                        </button>
+                    </div>
+                </div>
+
+                <div class="filter-bar">
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="searchInput" placeholder="Cari mobil..." onkeyup="filterCars()">
+                    </div>
+                    <select class="filter-select" id="typeFilter" onchange="filterCars()">
+                        <option value="">Semua Tipe</option>
+                        <option value="SUV">SUV</option>
+                        <option value="MPV">MPV</option>
+                        <option value="EV">Listrik (EV)</option>
+                        <option value="Sedan">Sedan</option>
+                    </select>
+                    <select class="filter-select" id="statusFilter" onchange="filterCars()">
+                        <option value="">Semua Status</option>
+                        <option value="Tersedia">Tersedia</option>
+                        <option value="Terjual">Terjual</option>
+                        <option value="Pending">Pending</option>
+                    </select>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Mobil</th>
+                                <th>Tipe</th>
+                                <th>Tahun</th>
+                                <th>Harga</th>
+                                <th>Status</th>
+                                <th style="text-align:center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="carTableBody">
+                            <!-- Data akan di-render oleh JavaScript -->
+                        </tbody>
+                    </table>
+                    <div id="emptyState" class="empty-state" style="display:none">
+                        <div class="icon">🚗</div>
+                        <h3>Tidak ada mobil ditemukan</h3>
+                        <p>Coba ubah filter atau tambah mobil baru</p>
+                    </div>
+                </div>
+
+                <div class="pagination" id="pagination">
+                    <button class="page-btn" onclick="changePage(-1)">← Prev</button>
+                    <button class="page-btn active">1</button>
+                    <button class="page-btn" onclick="changePage(1)">Next →</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add/Edit Modal -->
+    <div class="modal-overlay" id="carModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalTitle">➕ Tambah Mobil Baru</h3>
+                <button class="modal-close" onclick="closeModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="carForm">
+                    <input type="hidden" id="carId">
+                    <div class="form-row">
+                        <div class="form-group full">
+                            <label>Gambar Mobil <span class="required">*</span></label>
+                            <div class="image-preview" id="imagePreview" onclick="document.getElementById('carImage').click()">
+                                <div class="placeholder">
+                                    <span style="font-size:2rem">📷</span>
+                                    <span>Klik untuk upload gambar</span>
+                                    <span style="font-size:0.75rem;color:#aaa">atau paste URL gambar</span>
+                                </div>
+                            </div>
+                            <input type="file" id="carImage" accept="image/*" style="display:none" onchange="previewImage(event)">
+                            <input type="text" id="imageUrl" placeholder="https://..." style="margin-top:0.5rem" onchange="previewImageUrl(this.value)">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nama Mobil <span class="required">*</span></label>
+                            <input type="text" id="carName" placeholder="Contoh: New Creta Prime IVT" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Tipe <span class="required">*</span></label>
+                            <select id="carType" required>
+                                <option value="">Pilih Tipe</option>
+                                <option value="SUV">SUV</option>
+                                <option value="MPV">MPV</option>
+                                <option value="EV">Listrik (EV)</option>
+                                <option value="Sedan">Sedan</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Tahun <span class="required">*</span></label>
+                            <input type="number" id="carYear" placeholder="2026" min="2015" max="2030" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Harga (Rp) <span class="required">*</span></label>
+                            <input type="text" id="carPrice" placeholder="453.400.000" required oninput="formatPrice(this)">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Kondisi</label>
+                            <select id="carCondition">
+                                <option value="Baru">Baru</option>
+                                <option value="Bekas">Bekas</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select id="carStatus">
+                                <option value="Tersedia">Tersedia</option>
+                                <option value="Terjual">Terjual</option>
+                                <option value="Pending">Pending</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Mesin</label>
+                            <input type="text" id="carEngine" placeholder="1.500cc">
+                        </div>
+                        <div class="form-group">
+                            <label>Transmisi</label>
+                            <select id="carTransmission">
+                                <option value="Automatic">Automatic</option>
+                                <option value="Manual">Manual</option>
+                                <option value="CVT">CVT</option>
+                                <option value="IVT">IVT</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group full">
+                        <label>Deskripsi / Spesifikasi</label>
+                        <textarea id="carDesc" placeholder="Deskripsi singkat mobil..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Batal</button>
+                <button class="btn btn-primary" onclick="saveCar()">
+                    <span>💾</span> Simpan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirm Modal -->
+    <div class="modal-overlay confirm-modal" id="deleteModal">
+        <div class="modal">
+            <div class="modal-body">
+                <div class="confirm-icon">🗑️</div>
+                <h3>Hapus Mobil?</h3>
+                <p>Apakah Anda yakin ingin menghapus mobil <strong id="deleteCarName">-</strong>? Tindakan ini tidak dapat dibatalkan.</p>
+                <div style="display:flex;gap:0.8rem;justify-content:center;margin-top:1.5rem">
+                    <button class="btn btn-secondary" onclick="closeDeleteModal()">Batal</button>
+                    <button class="btn btn-danger" onclick="confirmDelete()">
+                        <span>🗑️</span> Ya, Hapus
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== AUTH CHECK =====
+        if (!sessionStorage.getItem('hyundai_admin_logged_in')) {
+            window.location.href = 'login.html';
+        }
+
+        const adminUser = sessionStorage.getItem('hyundai_admin_user') || 'Admin';
+        document.getElementById('adminName').textContent = adminUser.charAt(0).toUpperCase() + adminUser.slice(1);
+
+        // ===== DATA =====
+        let cars = JSON.parse(localStorage.getItem('hyundai_cars')) || [
+            { id: '1', name: 'New Creta Prime IVT', type: 'SUV', year: '2026', price: '453.400.000', condition: 'Baru', status: 'Tersedia', engine: '1.500cc', transmission: 'IVT', image: 'https://i.ibb.co.com/VcGFZNFL/IMG-20260509-WA0173.jpg', desc: 'SUV compact dengan fitur lengkap dan desain modern' },
+            { id: '2', name: 'Stargazer Cartenz Prime IVT HSS', type: 'MPV', year: '2026', price: '370.300.000', condition: 'Baru', status: 'Tersedia', engine: '1.500cc', transmission: 'IVT', image: 'https://i.ibb.co.com/chYmPnK7/IMG-20260509-WA0172-1.jpg', desc: 'MPV keluarga dengan kabin paling lega di kelasnya' },
+            { id: '3', name: 'New Creta Alpha IVT', type: 'SUV', year: '2026', price: '469.900.000', condition: 'Baru', status: 'Tersedia', engine: '1.500cc', transmission: 'IVT', image: 'https://i.ibb.co.com/Y7Vczjc1/IMG-20260509-WA0176.jpg', desc: 'Varian tertinggi New Creta dengan fitur premium' },
+            { id: '4', name: 'New Creta N Line IVT', type: 'SUV', year: '2026', price: '486.500.000', condition: 'Baru', status: 'Tersedia', engine: '1.500cc', transmission: 'IVT', image: 'https://i.ibb.co.com/Cc9WQSL/IMG-20260509-WA0177.jpg', desc: 'Varian sporty dengan body kit N Line eksklusif' },
+            { id: '5', name: 'Stargazer Cartenz X Prime IVT', type: 'MPV', year: '2026', price: '413.600.000', condition: 'Baru', status: 'Tersedia', engine: '1.500cc', transmission: 'IVT', image: 'https://i.ibb.co.com/Kj67xMc1/IMG-20260509-WA0178.jpg', desc: 'MPV crossover dengan ground clearance tinggi' },
+            { id: '6', name: 'Kona EV Prime Long Range', type: 'EV', year: '2026', price: '636.500.000', condition: 'Baru', status: 'Tersedia', engine: 'Listrik', transmission: 'Automatic', image: 'https://i.ibb.co.com/GQRL7FN9/IMG-20260509-WA0179.jpg', desc: 'Mobil listrik dengan jarak tempuh hingga 602 km' },
+            { id: '7', name: 'Palisade 2.2d XRT', type: 'SUV', year: '2026', price: '1.144.400.000', condition: 'Baru', status: 'Tersedia', engine: '2.199cc Diesel', transmission: 'Automatic', image: 'https://i.ibb.co.com/VpzKc12S/IMG-20260509-WA0180.jpg', desc: 'SUV premium dengan tampilan adventure XRT' },
+            { id: '8', name: 'Palisade HEV Calligraphy', type: 'SUV', year: '2026', price: '1.330.500.000', condition: 'Baru', status: 'Tersedia', engine: '2.5L Hybrid', transmission: 'Automatic', image: 'https://i.ibb.co.com/vChhLwJf/IMG-20260509-WA0181.jpg', desc: 'Varian tertinggi Palisade hybrid yang mewah' },
+            { id: '9', name: 'Stargazer Essential IVT', type: 'MPV', year: '2026', price: '293.700.000', condition: 'Baru', status: 'Tersedia', engine: '1.500cc', transmission: 'IVT', image: 'https://i.ibb.co.com/X1TVSpx/IMG-20260509-WA0182.jpg', desc: 'MPV terjangkau dengan fitur lengkap' },
+            { id: '10', name: 'Staria 2.2d Signature', type: 'MPV', year: '2026', price: '960.500.000', condition: 'Baru', status: 'Tersedia', engine: '2.199cc Diesel', transmission: 'Automatic', image: 'https://i.ibb.co.com/201dvB3z/IMG-20260509-WA0185.jpg', desc: 'MPV premium dengan desain futuristik spaceship' }
+        ];
+
+        let currentPage = 1;
+        const itemsPerPage = 10;
+        let editingId = null;
+        let deletingId = null;
+
+        // ===== FUNCTIONS =====
+        function saveData() {
+            localStorage.setItem('hyundai_cars', JSON.stringify(cars));
+            updateStats();
+        }
+
+        function updateStats() {
+            document.getElementById('totalCars').textContent = cars.length;
+            document.getElementById('availableCars').textContent = cars.filter(c => c.status === 'Tersedia').length;
+            
+            let total = 0;
+            cars.forEach(c => {
+                const price = parseInt(c.price.replace(/[^0-9]/g, ''));
+                total += price;
+            });
+            document.getElementById('totalRevenue').textContent = 'Rp ' + total.toLocaleString('id-ID');
+        }
+
+        function renderTable() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const typeFilter = document.getElementById('typeFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+
+            let filtered = cars.filter(car => {
+                const matchSearch = car.name.toLowerCase().includes(searchTerm);
+                const matchType = !typeFilter || car.type === typeFilter;
+                const matchStatus = !statusFilter || car.status === statusFilter;
+                return matchSearch && matchType && matchStatus;
+            });
+
+            const tbody = document.getElementById('carTableBody');
+            const emptyState = document.getElementById('emptyState');
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+            emptyState.style.display = 'none';
+
+            // Pagination
+            const start = (currentPage - 1) * itemsPerPage;
+            const paginated = filtered.slice(start, start + itemsPerPage);
+
+            tbody.innerHTML = paginated.map(car => `
+                <tr>
+                    <td>
+                        <div style="display:flex;align-items:center;gap:0.8rem">
+                            <img src="${car.image}" alt="${car.name}" class="car-thumb" onerror="this.src='https://via.placeholder.com/80x55?text=No+Image'">
+                            <div>
+                                <div class="car-name">${car.name}</div>
+                                <div style="font-size:0.75rem;color:#888">${car.engine} • ${car.transmission}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td><span class="car-type type-${car.type.toLowerCase()}">${car.type}</span></td>
+                    <td>${car.year}</td>
+                    <td><span class="price-tag">Rp ${car.price}</span></td>
+                    <td><span class="status-badge status-${car.status.toLowerCase()}">● ${car.status}</span></td>
+                    <td>
+                        <div class="action-btns">
+                            <button class="btn-icon btn-view" onclick="viewCar('${car.id}')" title="Lihat">👁</button>
+                            <button class="btn-icon btn-edit" onclick="editCar('${car.id}')" title="Edit">✏️</button>
+                            <button class="btn-icon btn-delete" onclick="deleteCar('${car.id}')" title="Hapus">🗑</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+
+            renderPagination(filtered.length);
+        }
+
+        function renderPagination(totalItems) {
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+            const pagination = document.getElementById('pagination');
+            
+            if (totalPages <= 1) {
+                pagination.style.display = 'none';
+                return;
+            }
+            pagination.style.display = 'flex';
+
+            let html = `<button class="page-btn" onclick="changePage(-1)" ${currentPage === 1 ? 'disabled' : ''}>← Prev</button>`;
+            for (let i = 1; i <= totalPages; i++) {
+                html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+            }
+            html += `<button class="page-btn" onclick="changePage(1)" ${currentPage === totalPages ? 'disabled' : ''}>Next →</button>`;
+            pagination.innerHTML = html;
+        }
+
+        function changePage(dir) {
+            currentPage += dir;
+            renderTable();
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            renderTable();
+        }
+
+        function filterCars() {
+            currentPage = 1;
+            renderTable();
+        }
+
+        // ===== MODAL FUNCTIONS =====
+        function openModal(carId = null) {
+            editingId = carId;
+            const modal = document.getElementById('carModal');
+            const title = document.getElementById('modalTitle');
+            const preview = document.getElementById('imagePreview');
+            
+            if (carId) {
+                const car = cars.find(c => c.id === carId);
+                title.textContent = '✏️ Edit Mobil';
+                document.getElementById('carId').value = car.id;
+                document.getElementById('carName').value = car.name;
+                document.getElementById('carType').value = car.type;
+                document.getElementById('carYear').value = car.year;
+                document.getElementById('carPrice').value = car.price;
+                document.getElementById('carCondition').value = car.condition;
+                document.getElementById('carStatus').value = car.status;
+                document.getElementById('carEngine').value = car.engine;
+                document.getElementById('carTransmission').value = car.transmission;
+                document.getElementById('carDesc').value = car.desc || '';
+                document.getElementById('imageUrl').value = car.image;
+                
+                preview.innerHTML = `<img src="${car.image}" alt="Preview" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`;
+                preview.classList.add('has-image');
+            } else {
+                title.textContent = '➕ Tambah Mobil Baru';
+                document.getElementById('carForm').reset();
+                document.getElementById('carId').value = '';
+                document.getElementById('carYear').value = '2026';
+                document.getElementById('imageUrl').value = '';
+                preview.innerHTML = `
+                    <div class="placeholder">
+                        <span style="font-size:2rem">📷</span>
+                        <span>Klik untuk upload gambar</span>
+                        <span style="font-size:0.75rem;color:#aaa">atau paste URL gambar</span>
+                    </div>`;
+                preview.classList.remove('has-image');
+            }
+            
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('carModal').classList.remove('show');
+            document.body.style.overflow = '';
+            editingId = null;
+        }
+
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('imagePreview');
+                    preview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+                    preview.classList.add('has-image');
+                    document.getElementById('imageUrl').value = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function previewImageUrl(url) {
+            if (url) {
+                const preview = document.getElementById('imagePreview');
+                preview.innerHTML = `<img src="${url}" alt="Preview" onerror="this.style.display='none';this.parentElement.classList.remove('has-image');this.parentElement.querySelector('.placeholder').style.display='flex'">`;
+                preview.classList.add('has-image');
+            }
+        }
+
+        function formatPrice(input) {
+            let value = input.value.replace(/[^0-9]/g, '');
+            if (value) {
+                input.value = parseInt(value).toLocaleString('id-ID');
+            }
+        }
+
+        function saveCar() {
+            const name = document.getElementById('carName').value.trim();
+            const type = document.getElementById('carType').value;
+            const year = document.getElementById('carYear').value;
+            const price = document.getElementById('carPrice').value.replace(/[^0-9]/g, '');
+            const image = document.getElementById('imageUrl').value || 'https://via.placeholder.com/300x200?text=No+Image';
+
+            if (!name || !type || !year || !price) {
+                showToast('error', 'Gagal!', 'Mohon lengkapi semua field yang wajib diisi.');
+                return;
+            }
+
+            const carData = {
+                id: editingId || Date.now().toString(),
+                name: name,
+                type: type,
+                year: year,
+                price: price,
+                condition: document.getElementById('carCondition').value,
+                status: document.getElementById('carStatus').value,
+                engine: document.getElementById('carEngine').value || '-',
+                transmission: document.getElementById('carTransmission').value,
+                image: image,
+                desc: document.getElementById('carDesc').value || ''
+            };
+
+            if (editingId) {
+                const index = cars.findIndex(c => c.id === editingId);
+                cars[index] = carData;
+                showToast('success', 'Berhasil!', `Mobil "${name}" telah diperbarui.`);
+            } else {
+                cars.push(carData);
+                showToast('success', 'Berhasil!', `Mobil "${name}" telah ditambahkan.`);
+            }
+
+            saveData();
+            renderTable();
+            closeModal();
+        }
+
+        function editCar(id) {
+            openModal(id);
+        }
+
+        function deleteCar(id) {
+            const car = cars.find(c => c.id === id);
+            deletingId = id;
+            document.getElementById('deleteCarName').textContent = car.name;
+            document.getElementById('deleteModal').classList.add('show');
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('show');
+            deletingId = null;
+        }
+
+        function confirmDelete() {
+            if (deletingId) {
+                const car = cars.find(c => c.id === deletingId);
+                cars = cars.filter(c => c.id !== deletingId);
+                saveData();
+                renderTable();
+                showToast('success', 'Terhapus!', `Mobil "${car.name}" telah dihapus.`);
+                closeDeleteModal();
+            }
+        }
+
+        function viewCar(id) {
+            const car = cars.find(c => c.id === id);
+            showToast('info', 'Detail Mobil', `${car.name} - Rp ${car.price}`);
+        }
+
+        // ===== TOAST =====
+        function showToast(type, title, message) {
+            const container = document.getElementById('toastContainer');
+            const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <span class="toast-icon">${icons[type]}</span>
+                <div class="toast-content">
+                    <h4>${title}</h4>
+                    <p>${message}</p>
+                </div>
+            `;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        // ===== SIDEBAR =====
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('show');
+        }
+
+        function showSection(section) {
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            event.target.closest('.nav-item').classList.add('active');
+            
+            const titles = {
+                'dashboard': 'Dashboard',
+                'cars': 'Kelola Mobil',
+                'orders': 'Pesanan',
+                'customers': 'Pelanggan',
+                'reports': 'Laporan',
+                'settings': 'Pengaturan'
+            };
+            
+            document.getElementById('pageTitle').textContent = titles[section] || 'Dashboard';
+            document.getElementById('breadcrumbText').textContent = titles[section] || 'Dashboard';
+            
+            if (section === 'dashboard' || section === 'cars') {
+                document.getElementById('dashboard-section').style.display = 'block';
+            } else {
+                document.getElementById('dashboard-section').style.display = 'none';
+                showToast('info', 'Info', 'Fitur ' + titles[section] + ' sedang dalam pengembangan.');
+            }
+            
+            if (window.innerWidth <= 1024) {
+                document.getElementById('sidebar').classList.remove('show');
+            }
+        }
+
+        function logout() {
+            sessionStorage.removeItem('hyundai_admin_logged_in');
+            sessionStorage.removeItem('hyundai_admin_user');
+            window.location.href = 'login.html';
+        }
+
+        // Close modal on overlay click
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    if (this.id === 'carModal') closeModal();
+                    if (this.id === 'deleteModal') closeDeleteModal();
+                }
+            });
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+                closeDeleteModal();
+            }
+        });
+
+        // Init
+        updateStats();
+        renderTable();
+    </script>
+</body>
+</html>'''
+
+
